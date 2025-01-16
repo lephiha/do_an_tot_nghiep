@@ -78,7 +78,6 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnConfirm"
-
         android:layout_gravity="center"
         android:gravity="center"
         android:paddingHorizontal="20dp"

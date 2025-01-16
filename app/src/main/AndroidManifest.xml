@@ -12,6 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Do_an"
         tools:targetApi="31">
+        <service
+            android:name=".configAPI.HTTPService"
+            android:enabled="true"
+            android:exported="true"></service>
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
