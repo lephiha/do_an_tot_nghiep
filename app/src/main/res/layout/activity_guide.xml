@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorBackground"
+    tools:context=".GuidePage.GuidePageActivity">
+
+    <ScrollView
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+        <LinearLayout
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical">
+
+            <!-- LOGO -->
+            <LinearLayout
+                android:id="@+id/logo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingHorizontal="20dp">
+
+                <ImageButton
+                    android:id="@+id/btnBack"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorBackground"
+                    android:contentDescription="@string/image"
+                    android:src="@drawable/ic_arrow_back" />
+
+                <ImageView
+                    android:layout_width="200dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="start"
+                    android:contentDescription="@string/image"
+                    android:src="@drawable/logo2" />
+
+            </LinearLayout><!-- end LOGO -->
+
+            <WebView
+                android:id="@+id/wvwDescription"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:layout_margin="10dp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnOpenWithGoogleMap"
+                style="@style/button_style_theme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="50dp"
+                android:text="@string/open_with_google_map" />
+
+            <!-- medical_examination_guide -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="25dp"
+                android:paddingVertical="10dp"
+                android:text="@string/medical_examination_guide"
+                android:textAllCaps="true"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <!-- medical_examination_procedures -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_arrow_right"
+                android:paddingVertical="10dp"
+                android:text="@string/medical_examination_procedures"
+                android:textColor="@color/colorThemeBlueNavy"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                tools:ignore="UseCompatTextViewDrawableXml" />
+
+
+
+            <LinearLayout
+                android:padding="5dp"
+                android:id="@+id/lytMedicalExaminationProcedure"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:textSize="12sp"
+                    android:lineSpacingExtra="4dp"
+                    android:textColor="@color/colorTextBlack"
+                    android:text="@string/note_medical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:paddingTop="5dp"
+                    android:textSize="12sp"
+                    android:lineSpacingExtra="4dp"
+                    android:textColor="@color/colorTextBlack"
+                    android:text="@string/note_medical_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <ImageView
+                    android:src="@drawable/img_parking"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"/>
+
+            </LinearLayout>
+            <!-- medical_examination_procedures  -->
+
+            <!-- attention_patient -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_arrow_right"
+                android:paddingVertical="10dp"
+                android:text="@string/attention_patient"
+                android:textColor="@color/colorThemeBlueNavy"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                tools:ignore="UseCompatTextViewDrawableXml"/>
+
+            <LinearLayout
+                android:padding="5dp"
+                android:id="@+id/lytAttentionPatient"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:textSize="12sp"
+                    android:lineSpacingExtra="4dp"
+                    android:textColor="@color/colorTextBlack"
+                    android:text="@string/note_attention_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:paddingTop="5dp"
+                    android:textSize="12sp"
+                    android:lineSpacingExtra="4dp"
+                    android:textColor="@color/colorTextBlack"
+                    android:text="@string/note_attention_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+            <!-- medical_examination_procedures  -->
+
+        </LinearLayout>
+
+
+
+    </ScrollView>
+
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:background="@color/colorThemeBlueNavy"
+        android:layout_width="match_parent"
+        android:layout_height="80dp">
+
+        <TextView
+            android:paddingVertical="10dp"
+            android:text="@string/LeeHa_Medical_support_call_center"
+            android:gravity="center"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:text="@string/LeeHa_Medical_phone_number"
+            android:gravity="center"
+            android:textAllCaps="false"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorYellow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+</LinearLayout>

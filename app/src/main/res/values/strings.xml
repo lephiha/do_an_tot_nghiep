@@ -10,8 +10,8 @@
 <string name="or">Or</string>
 <string name="phone_number">Phone number</string>
 <string name="phone_number_2">Phone number:</string>
-<string name="my_phone_number">392405600</string>
-<string name="umbrella_health_phone_number">0366.253.623 – 079.410.4124 (7h to 18h)</string>
+<string name="my_phone_number">0392405600</string>
+<string name="LeeHa_Medical_phone_number">0392.405.600 – 033.512.2341 (7h to 18h)</string>
 <string name="enter_your_verification_code">Enter your verification code</string>
 <string name="confirm">Confirm</string>
 <string name="verification_code">Verification code</string>
@@ -52,7 +52,7 @@
 <string name="read_more">Read more</string>
 <string name="musculoskeletal">Musculoskeletal</string>
 <string name="popular_doctors">Popular doctors</string>
-<string name="default_doctor_name">Doctor Nguyễn Thành Phong</string>
+<string name="default_doctor_name">Doctor Lê Phi Hà</string>
 <string name="default_speciality">General</string>
 <string name="default_price">Price: 1.896.000 VND</string>
 <string name="app_description">Welcome to Umbrella Health - The best health application in Việt Nam</string>
@@ -61,10 +61,10 @@
 <string name="umbreall_health_is_running_in_background">Umbrella Health is running in background</string>
 <string name="doctor_information">Doctor information</string>
 <string name="doctor_name">Doctor:</string>
-<string name="default_personal_name">Nguyễn Thành Phong</string>
+<string name="default_personal_name">Lê Phi Hà</string>
 <string name="speciality_name">Speciality:</string>
 <string name="speciality">Speciality</string>
-<string name="default_phone_number">0366253623</string>
+<string name="default_phone_number">0392405600</string>
 <string name="working_process">Working process:</string>
 <string name="default_description"><![CDATA[\<p>- Hướng dẫn đặt t&ecirc;n file b&aacute;o c&aacute;o định kỳ:</p>\n\n<p>&nbsp; &nbsp; ** Lớp (m&atilde; chữ)_M&atilde; sinh vi&ecirc;n(3 số cuối)_Họ v&agrave; t&ecirc;n _BCDK1</p>\n\n<p>VD: AT_069_LuongMinhTien_BCĐK1</p>\]]></string>
 <string name="speciality_information">Speciality informatio</string>
@@ -81,8 +81,8 @@
 <string name="service_information">Service overview</string>
 <string name="create_booking">Create booking</string>
 <string name="booking">Booking</string>
-<string name="default_service_name">Xét nghiệm định lượng kháng thể SARS-CoV-2</string>
-<string name="free_booking_fee">Free booking fee</string>
+<string name="default_service_name">Xét nghiệm máu</string>
+<string name="free_booking_fee">booking fee</string>
 <string name="bookingName">Booking personal name (Mandatory)</string>
 <string name="bookingName2">Booking personal name</string>
 <string name="bookingPhone">Booking personal phone (Mandatory)</string>
@@ -112,18 +112,18 @@
 <string name="you_do_not_fill_mandatory_field_try_again">You have not provided all required information. Please check again !</string>
 <string name="icon">ICON</string>
 <string name="booking_successfully">Successful booking!</string>
-<string name="if_it_is_the_first_time_you_have_exam">If you do not know the medical examination process at Umbrella Heath. Click the button below to view the instructions!</string>
+<string name="if_it_is_the_first_time_you_have_exam">If you do not know the medical examination process at LeeHa Medical. Click the button below to view the instructions!</string>
 <string name="how_to_exam_in_umbrella_health">Guide to medical examination in Umbrella Health</string>
 <string name="open_with_google_map">Open with Google Map</string>
 <string name="medical_examination_guide">Guide to medical examination</string>
 <string name="medical_examination_procedures">Check-up procedure</string>
 <string name="attention_patient">Patient\'s note</string>
-<string name="umbrella_health_support_call_center">Umbrella Health Support Call Center</string>
-<string name="note_medical">Below are <b>guidelines and procedures</b> for customers who book through Umbrella Health</string>
-<string name="note_medical_1">1. You go to Le Van Thinh Hospital, <b>130 Le Van Thinh Street, Binh Trung Tay Ward, District 2, Ho Chi Minh City</b>(clinic facility). Note the parking place
+<string name="LeeHa_Medical_support_call_center">LeeHa Medical Support Call Center</string>
+<string name="note_medical">Below are <b>guidelines and procedures</b> for customers who book through LeeHa Medical</string>
+<string name="note_medical_1">1. You go to 108 Military Central Hospital, <b>01 Tran Hung Dao Street, Bach Dang Ward, District Hai Ba Trung, Ha Noi City</b>(clinic facility). Note the parking place
          \n * Motorcycle: you can park it at the hospital parking lot
          \n * Car: you can ask your security guard to show you where to park 150m away from the hospital
-         \n 2. You go to the registration counter and <b>reported an appointment through Umbrella Health</b> for priority support
+         \n 2. You go to the registration counter and <b>reported an appointment through LeeHa Medical</b> for priority support
     </string>
 <string name="note_attention_1">
         <b>Note about COVID-19</b>
@@ -136,14 +136,14 @@
          \n * Life/non-life insurance card
          \n * Identity card for adults. Birth certificate for children
     </string>
-<string name="default_datetime">2022-11-24 10:02:43</string>
+<string name="default_datetime">2025-03-11 11:02:43</string>
 <string name="notifications">Notifications</string>
 <string name="mark_all_as_read">Mark all as read</string>
 <string name="successful_action">The operation was done successfully!</string>
 <string name="at">at</string>
 <string name="back">Back</string>
-<string name="my_birthday">01-05-2022</string>
-<string name="my_address">14 Lý Tự Trọng, Bến Nghé, Quận 1, Thành phố Hồ Chí Minh</string>
+<string name="my_birthday">08-09-2002</string>
+<string name="my_address">Bệnh viện Quân Y 103, Bệnh viện Quân y 103, Số 261 Đ. Phùng Hưng, P. Phúc La, Hà Đông, Hà Nội</string>
 <string name="default_reason">Periodic health examination</string>
 <string name="bookingStatus">Schedule status</string>
 <string name="processing">Processing</string>
@@ -159,7 +159,7 @@
 <string name="numericalOrder">Ordinal number of visits</string>
 <string name="appointment_information">Appointment information</string>
 <string name="patient_numerical_order">Patient number</string>
-<string name="default_date">27-11-2022</string>
+<string name="default_date">28-02-2025</string>
 <string name="default_time">09:00</string>
 <string name="appointmentStatus">Appointment\'s status</string>
 <string name="watch_medical_record">Watch medical record</string>
