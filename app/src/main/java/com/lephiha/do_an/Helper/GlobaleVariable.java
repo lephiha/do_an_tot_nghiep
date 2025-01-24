@@ -3,6 +3,7 @@ package com.lephiha.do_an.Helper;
 import android.app.Application;
 import android.app.VoiceInteractor;
 
+import com.google.firebase.FirebaseApp;
 import com.lephiha.do_an.Model.Option;
 import com.lephiha.do_an.Model.User;
 import com.lephiha.do_an.R;
@@ -20,6 +21,13 @@ public class GlobaleVariable extends Application {
     private String contentType = "application/x-www-form-urlencoded";
 
     private Map<String, String> headers;
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        // Khởi tạo Firebase
+        FirebaseApp.initializeApp(this);
+    }
 
     public Map<String, String> getHeaders() {
 

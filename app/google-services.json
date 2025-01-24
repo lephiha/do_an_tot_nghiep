@@ -1,0 +1,38 @@
+{
+  "project_info": {
+    "project_number": "652028898599",
+    "project_id": "doantotnghiep-ct5b",
+    "storage_bucket": "doantotnghiep-ct5b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:652028898599:android:a9eec641a3e2899c084d02",
+        "android_client_info": {
+          "package_name": "com.lephiha.do_an"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "652028898599-l2a329ei4c2jec7fag6md74kbbvq6u18.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lephiha.do_an",
+            "certificate_hash": "d334b66fc004e05ec84d1fcf81e823e2089efe4e"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhKq_EOIqEAAsW34Ec_PyatIrs3K8e-1Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
