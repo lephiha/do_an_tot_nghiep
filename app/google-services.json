@@ -20,6 +20,10 @@
             "package_name": "com.lephiha.do_an",
             "certificate_hash": "d334b66fc004e05ec84d1fcf81e823e2089efe4e"
           }
+        },
+        {
+          "client_id": "652028898599-7ghs0e99el9v4jod0j7ur3bo6actbs7s.apps.googleusercontent.com",
+          "client_type": 3
         }
       ],
       "api_key": [
@@ -29,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "652028898599-7ghs0e99el9v4jod0j7ur3bo6actbs7s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

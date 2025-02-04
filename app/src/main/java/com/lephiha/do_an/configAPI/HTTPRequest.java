@@ -1,7 +1,15 @@
 package com.lephiha.do_an.configAPI;
 
 
+import com.lephiha.do_an.Container.DoctorReadAll;
+import com.lephiha.do_an.Container.DoctorReadByID;
 import com.lephiha.do_an.Container.Login;
+import com.lephiha.do_an.Container.NotificationReadAll;
+import com.lephiha.do_an.Container.PatientProfile;
+import com.lephiha.do_an.Container.PatientProfileChangeAvatar;
+import com.lephiha.do_an.Container.PatientProfileChangePersonalInformation;
+import com.lephiha.do_an.Container.SpecialityReadAll;
+import com.lephiha.do_an.Container.SpecialityReadByID;
 
 import java.util.Map;
 
@@ -31,4 +39,43 @@ public interface HTTPRequest {
     @POST("api/login/google")
     Call<Login> loginWithGoogle(@Field("email") String email, @Field("password") String password, @Field("type") String type);
 
+    //PATIENT PROFILE - GET - READ PERSONAL INFORMATION
+    @GET("api/patient/profile")
+    Call<PatientProfile> readPersonalInformation(@HeaderMap Map<String, String> headers);
+
+    @FormUrlEncoded
+    @POST("api/patient/profile")
+    Call<PatientProfileChangePersonalInformation> changePersonalInformation(@HeaderMap Map<String, String> header ,
+                                                                            @Field("action") String action,
+                                                                            @Field("name") String name,
+                                                                            @Field("gender") String gender,
+                                                                            @Field("birthday") String birthday,
+                                                                            @Field("address") String address);
+
+    @FormUrlEncoded
+    @POST("api/patient/profile")
+    Call<PatientProfileChangeAvatar> changeAvatar(@Header("Authorization") String accessToken,
+                                                  @Header("Type") String type,
+                                                  @Part MultipartBody.Part file,
+                                                  @Part("action") RequestBody action);
+
+    //Speciality
+
+    @GET("api/specialities")
+    Call<SpecialityReadAll> specialityReadAll(@HeaderMap Map<String, String> headers, @QueryMap Map<String, String> parameters);
+
+    @GET("api/specialities/{id}")
+    Call<SpecialityReadByID> specialityReadById(@HeaderMap Map<String, String> headers, @Path("id") String id);
+
+    //Doctor
+
+    @GET("api/doctors")
+    Call<DoctorReadAll> doctorReadAll (@HeaderMap Map<String, String> headers,@QueryMap Map<String, String> parameters);
+
+    @GET("api/doctors/{id}")
+    Call<DoctorReadByID> doctorReadByID (@HeaderMap Map<String, String> headers, @Path("id") String id);
+
+    //Notification
+    @GET("api/patient/notifications")
+    Call<NotificationReadAll> notificationReadAll(@HeaderMap Map<String, String> header);
 }
