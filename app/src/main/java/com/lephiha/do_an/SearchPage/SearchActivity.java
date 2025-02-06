@@ -11,13 +11,21 @@ import android.widget.Spinner;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.lephiha.do_an.Adapter.FilterOptionAdapter;
 import com.lephiha.do_an.Helper.GlobaleVariable;
 import com.lephiha.do_an.Helper.Tooltip;
+import com.lephiha.do_an.Model.Doctor;
 import com.lephiha.do_an.Model.Option;
+import com.lephiha.do_an.Model.Service;
+import com.lephiha.do_an.Model.Speciality;
 import com.lephiha.do_an.R;
+import com.lephiha.do_an.RecyclerView.DoctorRecyclerView;
+import com.lephiha.do_an.RecyclerView.ServiceRecyclerView;
+import com.lephiha.do_an.RecyclerView.SpecialityRecyclerView;
 
 import java.util.HashMap;
 import java.util.List;
@@ -114,9 +122,9 @@ public class SearchActivity extends AppCompatActivity {
         List<Option> filterOptions = globaleVariable.getFilterOption();
         FilterOptionAdapter filterOptionAdapter = new FilterOptionAdapter(this, filterOptions);
         sprFilter.setAdapter(filterOptionAdapter);
-        sprFilter.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        sprFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 filterKey = filterOptions.get(position).getName();
                 sendRequestFilterKey();
             }
@@ -129,6 +137,123 @@ public class SearchActivity extends AppCompatActivity {
     @SuppressLint("NotifyDataSetChanged")
     private void sendRequestFilterKey() {
         List<Option> options = globaleVariable.getFilterOption();
-        
+        String option1 = options.get(0).getName(); //service
+        String option2 = options.get(1).getName(); //speciality
+        String option3 = options.get(2).getName(); //doctor
+
+        if (filterKey.equals(option2)) {
+            viewModel.specialityReadAll(header, paramSpeciality);
+            doctorRecyclerView.setVisibility(View.GONE);
+            specialityRecyclerView.setVisibility(View.VISIBLE);
+            serviceRecyclerView.setVisibility(View.GONE);
+        }
+        else if (filterKey.equals(option3)) {
+            viewModel.serviceReadAll(header, paramService);
+            doctorRecyclerView.setVisibility(View.VISIBLE);
+            specialityRecyclerView.setVisibility(View.GONE);
+            serviceRecyclerView.setVisibility(View.GONE);
+        }
+        else {
+            viewModel.doctorReadAll(header, paramDoctor);
+            doctorRecyclerView.setVisibility(View.GONE);
+            specialityRecyclerView.setVisibility(View.GONE);
+            serviceRecyclerView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    //setup event
+
+    private void setupEvent() {
+        //button back
+        btnBack.setOnClickListener(view -> finish());
+
+        //button search
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                paramDoctor.put("search", query);
+                paramService.put("search", query);
+                paramSpeciality.put("search", query);
+                sendRequestFilterKey();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (newText.equals("")) {
+                    paramDoctor.put("search", "");
+                    paramService.put("search", "");
+                    paramSpeciality.put("search", "");
+                    sendRequestFilterKey();
+                    searchView.clearFocus();
+                }
+                return false;
+            }
+        });
+    }
+
+    //setup view model
+
+    private void setupViewModel() {
+        viewModel = new ViewModelProvider(this).get(SearchViewModel.class);
+        viewModel.instantiate();
+
+        //doctor
+        paramDoctor.put("length", "100"); //param có thể truyỳn trong api
+        viewModel.doctorReadAll(header, paramDoctor);
+        viewModel.getDoctorReadAllResponse().observe(this, response -> {
+            int result = response.getResult();
+            if (result == 1) {
+                List<Doctor> list = response.getData();
+                setupRecyclerViewDoctor(list);
+            }
+        });
+
+        //speciality
+        paramSpeciality.put("length", "100");
+        viewModel.specialityReadAll(header, paramSpeciality);
+        viewModel.getSpecialityReadAll().observe(this, response -> {
+            int result = response.getResult();
+            if (result == 1) {
+                List<Speciality> list = response.getData();
+                setupRecyclerViewSpeciality(list);
+            }
+        });
+
+        //service
+
+        paramService.put("length", "100");
+        viewModel.serviceReadAll(header, paramService);
+        viewModel.getServiceReadAllResponse().observe(this, response -> {
+            int result = response.getResult();
+            if (result == 1) {
+                List<Service> list = response.getData();
+                setupRecyclerViewService(list);
+            }
+        });
+    }
+
+    private void setupRecyclerViewDoctor(List<Doctor> list) {
+        DoctorRecyclerView doctorAdapter = new DoctorRecyclerView(this, list);
+        doctorRecyclerView.setAdapter(doctorAdapter);
+
+        LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        doctorRecyclerView.setLayoutManager(manager);
+    }
+
+    private void setupRecyclerViewSpeciality(List<Speciality> list) {
+        SpecialityRecyclerView specialityAdapter = new SpecialityRecyclerView(this, list, R.layout.recycler_view_element_speciality2);
+        specialityRecyclerView.setAdapter(specialityAdapter);
+
+        LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        specialityRecyclerView.setLayoutManager(manager);
+    }
+
+    private void setupRecyclerViewService(List<Service> list) {
+        ServiceRecyclerView serviceAdapter = new ServiceRecyclerView(this, list);
+        serviceRecyclerView.setAdapter(serviceAdapter);
+
+        LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        serviceRecyclerView.setLayoutManager(manager);
     }
 }

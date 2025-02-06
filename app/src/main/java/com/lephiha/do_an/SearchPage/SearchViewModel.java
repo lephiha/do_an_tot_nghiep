@@ -36,6 +36,10 @@ public class SearchViewModel extends ViewModel {
         return serviceReadAllResponse;
     }
 
+    public MutableLiveData<DoctorReadAll> getDoctorReadAllResponse() {
+        return doctorReadAllResponse;
+    }
+
     //create repo
 
     public void instantiate() {
