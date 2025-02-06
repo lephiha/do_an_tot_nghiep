@@ -12,11 +12,15 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.lephiha.do_an.AppointmentPage.AppointmentFragment;
 import com.lephiha.do_an.Container.NotificationReadAll;
 import com.lephiha.do_an.Helper.Dialog;
 import com.lephiha.do_an.Helper.GlobaleVariable;
+import com.lephiha.do_an.Helper.Tooltip;
 import com.lephiha.do_an.LoginPage.LoginActivity;
+import com.lephiha.do_an.NotificationPage.NotificationFragment;
 import com.lephiha.do_an.R;
+import com.lephiha.do_an.SettingPage.SettingsFragment;
 import com.lephiha.do_an.configAPI.HTTPRequest;
 import com.lephiha.do_an.configAPI.HTTPService;
 
@@ -89,30 +93,24 @@ public class HomePageActivity extends AppCompatActivity {
 
             int shortcut = item.getItemId();
 
-            switch (shortcut) {
-                case R.id.shortcutHome:
-                    //setNumberOnNotif
-                    fragment = new HomeFragment();
-                    fragmentTag = "homeFragment";
-                    break;
-                case R.id.shortcutNotification:
-                    setNumberOnNotificationIcon();
-                    fragment = new NotificationFragment();
-                    fragmentTag = "notificationFragment";
-                    break;
-                case R.id.shortcutAppointment:
-                    fragment = new AppointmentpageFragment();
-                    fragmentTag = "appointmentFragment";
-                    break;
-                case R.id.shortcutPersonality:
-                    fragment = new SettingsFragment();
-                    fragmentTag = "settingsFragment";
-                    break;
-
+            if (shortcut == R.id.shortcutHome) {
+                // setNumberOnNotif
+                fragment = new HomeFragment();
+                fragmentTag = "homeFragment";
+            } else if (shortcut == R.id.shortcutNotification) {
+                setNumberOnNotificationIcon();
+                fragment = new NotificationFragment();
+                fragmentTag = "notificationFragment";
+            } else if (shortcut == R.id.shortcutAppointment) {
+                fragment = new AppointmentFragment();
+                fragmentTag = "appointmentFragment";
+            } else if (shortcut == R.id.shortcutPersonality) {
+                fragment = new SettingsFragment();
+                fragmentTag = "settingsFragment";
             }
 
             enableFragment(fragment, fragmentTag);
-            return true;
+
         });
     }
 

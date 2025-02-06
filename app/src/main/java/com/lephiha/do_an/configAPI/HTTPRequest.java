@@ -8,8 +8,11 @@ import com.lephiha.do_an.Container.NotificationReadAll;
 import com.lephiha.do_an.Container.PatientProfile;
 import com.lephiha.do_an.Container.PatientProfileChangeAvatar;
 import com.lephiha.do_an.Container.PatientProfileChangePersonalInformation;
+import com.lephiha.do_an.Container.ServiceReadAll;
+import com.lephiha.do_an.Container.ServiceReadByID;
 import com.lephiha.do_an.Container.SpecialityReadAll;
 import com.lephiha.do_an.Container.SpecialityReadByID;
+import com.lephiha.do_an.Container.Weather;
 
 import java.util.Map;
 
@@ -78,4 +81,16 @@ public interface HTTPRequest {
     //Notification
     @GET("api/patient/notifications")
     Call<NotificationReadAll> notificationReadAll(@HeaderMap Map<String, String> header);
+
+    //Weather - opent weather map.org
+    @GET("https://api.openweathermap.org/data/2.5/weather")
+    Call<Weather> getCurrentWeather(@QueryMap Map<String, String> parameters);
+
+
+    //service
+    @GET("api/services")
+    Call<ServiceReadAll> serviceReadAll(@HeaderMap Map<String, String> headers, @QueryMap Map<String, String> parameters);
+
+    @GET("api/services/{id}")
+    Call<ServiceReadByID> serviceReadByID(@HeaderMap Map<String, String> headers, @Path("id") String id);
 }

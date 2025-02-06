@@ -46,6 +46,7 @@
 <string name="covid19_examination">COVID-19 examination</string>
 <string name="medical_test_examination">Medical test examination</string>
 <string name="tooth_examination">Tooth examination</string>
+<string name="chat_ai">Medical at home</string>
 <string name="eye_examination">Eye examination</string>
 <string name="speciality_examination">Speciality examination</string>
 <string name="popular_specialities">Popular specialities</string>

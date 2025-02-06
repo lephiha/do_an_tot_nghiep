@@ -41,15 +41,13 @@ public class  Constant {
      * API Key là key bên dưới
      */
     public static String OPEN_WEATHER_MAP_API_KEY() {
-        return "4167c6d6038647807b56abd84b7d6626";
+        return "9a17a80007022feb2bed09db047e14f9";
     }
 
-    public static String OPEN_WEATHER_MAP_API_KEY_2() {
-        return "fc07e74110a9bcbc166c7887e51ec2db";
-    }
 
-    public static String OPEN_WEATHER_MAP_PATH() {
-        // Hà Nội có tọa độ: lat = 21.0285, lon = 105.8542
-        return "https://api.openweathermap.org/data/2.5/weather?lat=21.0285&lon=105.8542&appid=" + OPEN_WEATHER_MAP_API_KEY();
+
+    public static String OPEN_WEATHER_MAP_PATH()
+    {
+        return "https://api.openweathermap.org/data/2.5/weather/";
     }
 }

@@ -20,6 +20,12 @@
         android:icon="@drawable/shortcut_state_notification"/>
 
     <item
+        android:id="@+id/shortcutChatAi"
+        android:title="Chat AI"
+        app:labelVisibilityMode="unlabeled"
+        android:icon="@drawable/baseline_message_24"/>
+
+    <item
         android:id="@+id/shortcutPersonality"
         android:title="@string/personality"
         app:labelVisibilityMode="unlabeled"

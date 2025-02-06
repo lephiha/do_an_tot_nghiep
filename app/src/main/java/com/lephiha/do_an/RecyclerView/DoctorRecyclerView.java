@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.lephiha.do_an.DoctorPage.DoctorPageActivity;
 import com.lephiha.do_an.Model.Doctor;
 import com.lephiha.do_an.R;
 import com.lephiha.do_an.configAPI.Constant;
@@ -60,7 +61,7 @@ public class DoctorRecyclerView extends RecyclerView.Adapter<DoctorRecyclerView.
         holder.speciality.setText(speciality);
         holder.name.setText(name);
         holder.layout.setOnClickListener(view->{
-            Intent intent = new Intent(context, DoctorpageActivity.class);
+            Intent intent = new Intent(context, DoctorPageActivity.class);
             intent.putExtra("doctorId", String.valueOf(id));
             context.startActivity(intent);
         });

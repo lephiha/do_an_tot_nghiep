@@ -88,7 +88,10 @@ public class DoctorRepository {
     /** read by id **/
     //getter
     private MutableLiveData<DoctorReadByID> readByIdResponse = new MutableLiveData<>();
-    private MutableLiveData<DoctorReadByID> readById (Map<String, String> header, String doctorId) {
+    public MutableLiveData<DoctorReadByID> getReadByIdResponse() {
+        return readByIdResponse;
+    }
+    public MutableLiveData<DoctorReadByID> readById (Map<String, String> header, String doctorId) {
         //1
         animation.setValue(true);
         //2
