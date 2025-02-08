@@ -82,6 +82,8 @@ public interface HTTPRequest {
     @GET("api/patient/notifications")
     Call<NotificationReadAll> notificationReadAll(@HeaderMap Map<String, String> header);
 
+
+
     //Weather - opent weather map.org
     @GET("https://api.openweathermap.org/data/2.5/weather")
     Call<Weather> getCurrentWeather(@QueryMap Map<String, String> parameters);

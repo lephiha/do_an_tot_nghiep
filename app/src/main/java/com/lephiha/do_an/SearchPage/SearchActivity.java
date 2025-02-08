@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
-import android.widget.SearchView;
+import androidx.appcompat.widget.SearchView;
 import android.widget.Spinner;
 
 import androidx.annotation.Nullable;
@@ -20,6 +20,7 @@ import com.lephiha.do_an.Helper.GlobaleVariable;
 import com.lephiha.do_an.Helper.Tooltip;
 import com.lephiha.do_an.Model.Doctor;
 import com.lephiha.do_an.Model.Option;
+
 import com.lephiha.do_an.Model.Service;
 import com.lephiha.do_an.Model.Speciality;
 import com.lephiha.do_an.R;
@@ -37,7 +38,6 @@ public class SearchActivity extends AppCompatActivity {
     private final String TAG = "SearchPage Activity";
     private ImageButton btnBack;
     private Spinner sprFilter;
-
     private SearchView searchView;
     private GlobaleVariable globaleVariable;
     private SearchViewModel viewModel;

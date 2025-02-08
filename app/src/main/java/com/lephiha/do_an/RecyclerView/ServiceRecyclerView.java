@@ -47,14 +47,14 @@ public class ServiceRecyclerView extends RecyclerView.Adapter<ServiceRecyclerVie
 
         int serviceId = element.getId();
         String name = element.getName();
-        String image = Constant.UPLOAD_URI() + element.getImage();
+        String image = element.getImage();
 
         holder.name.setText(name);
-        if( element.getImage().length() > 0)
-        {
-            Picasso.get().load(image).into(holder.image);
+        if (image != null && image.length() > 0) {
+            String imageUrl = Constant.UPLOAD_URI() + image;
+            Picasso.get().load(imageUrl).into(holder.image);
         }
-        holder.layout.setOnClickListener(view->{
+        holder.layout.setOnClickListener(view -> {
             Intent intent = new Intent(context, ServiceActivity.class);
             intent.putExtra("serviceId", String.valueOf(serviceId));
             context.startActivity(intent);

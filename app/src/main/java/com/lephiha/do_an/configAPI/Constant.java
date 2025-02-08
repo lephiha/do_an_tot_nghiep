@@ -16,6 +16,10 @@ public class  Constant {
         return "http://10.0.2.2/Do_an_tot_nghiep_lph/";
     }
 
+    public static String VIDEO_PATH()
+    {
+        return "https://www.youtube.com/watch?v=W4JA4dbscis&ab_channel=UmbrellaCorporation4";
+    }
     //define app name
     public static String APP_NAME()
     {

@@ -10,7 +10,7 @@ import androidx.appcompat.app.AlertDialog;
 
 import com.lephiha.do_an.R;
 
-public class Dialog {
+public class    Dialog {
     private View viewAlert;
     private AlertDialog alert;
     private Context context;
