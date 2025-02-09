@@ -428,12 +428,15 @@ public class HomeFragment extends Fragment {
     //in ra ngay va thoi tiet
 
     private void printDateAndWeather(Weather content) {
-
         String today = Tooltip.getReadableToday(context);
         txtDate.setText(today);
 
-        String temperature = String.valueOf(content.getMain().getTemp());
-        String weatherInfo = temperature.substring(0,2) + getString(R.string.celsius);
+        // Chuyển từ Kelvin sang Celsius
+        double tempKelvin = content.getMain().getTemp();
+        int tempCelsius = (int) (tempKelvin - 273.15); // Ép về int để lấy số nguyên
+
+        String weatherInfo = tempCelsius + getString(R.string.celsius);
         txtWeather.setText(weatherInfo);
     }
+
 }
