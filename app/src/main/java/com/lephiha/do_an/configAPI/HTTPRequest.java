@@ -1,6 +1,9 @@
 package com.lephiha.do_an.configAPI;
 
 
+import com.lephiha.do_an.Container.BookingCreate;
+import com.lephiha.do_an.Container.BookingReadAll;
+import com.lephiha.do_an.Container.BookingReadByID;
 import com.lephiha.do_an.Container.DoctorReadAll;
 import com.lephiha.do_an.Container.DoctorReadByID;
 import com.lephiha.do_an.Container.Login;
@@ -95,4 +98,28 @@ public interface HTTPRequest {
 
     @GET("api/services/{id}")
     Call<ServiceReadByID> serviceReadByID(@HeaderMap Map<String, String> headers, @Path("id") String id);
+
+    //Booking
+    @FormUrlEncoded
+    @POST("api/patient/booking")
+    Call<BookingCreate> bookingCreate(@HeaderMap Map<String, String> headers,
+                                      @Field("doctor_id") String doctorId,
+                                      @Field("service_id") String serviceId,
+                                      @Field("booking_name") String bookingName,
+                                      @Field("booking_phone") String bookingPhone,
+                                      @Field("name") String name,
+                                      @Field("gender") String gender,
+                                      @Field("address") String address,
+                                      @Field("reason") String reason,
+                                      @Field("birthday") String birthday,
+                                      @Field("appointment_time") String appointmentTime,
+                                      @Field("appointment_date") String appointmentDate);
+
+    @GET("api/patient/booking")
+    Call<BookingReadAll> bookingReadAll(@HeaderMap Map<String, String> header, @HeaderMap Map<String, String> parameters);
+
+    @GET("api/patient/booking/{id}")
+    Call<BookingReadByID> bookingReadByID(@HeaderMap Map <String, String> header, @Path("id") String bookingId);
+
+
 }
