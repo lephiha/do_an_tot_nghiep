@@ -8,5 +8,5 @@ import com.lephiha.do_an.Container.ServiceReadByID;
 public class BookingViewModel extends ViewModel {
 
     private MutableLiveData<ServiceReadByID> serviceReadByIdResponse;
-    
+
 }
