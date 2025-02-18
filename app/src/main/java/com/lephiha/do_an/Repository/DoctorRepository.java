@@ -28,7 +28,7 @@ public class DoctorRepository {
         return animation;
     }
 
-    /** read al **/
+    /** read all **/
 
     //getter
     private final MutableLiveData<DoctorReadAll> readAllResponse = new MutableLiveData<>();
