@@ -2,6 +2,9 @@ package com.lephiha.do_an.configAPI;
 
 
 import com.lephiha.do_an.Container.BookingCreate;
+import com.lephiha.do_an.Container.BookingPhotoDelete;
+import com.lephiha.do_an.Container.BookingPhotoReadAll;
+import com.lephiha.do_an.Container.BookingPhotoUpload;
 import com.lephiha.do_an.Container.BookingReadAll;
 import com.lephiha.do_an.Container.BookingReadByID;
 import com.lephiha.do_an.Container.DoctorReadAll;
@@ -121,5 +124,17 @@ public interface HTTPRequest {
     @GET("api/patient/booking/{id}")
     Call<BookingReadByID> bookingReadByID(@HeaderMap Map <String, String> header, @Path("id") String bookingId);
 
+    //Booking photo
+    @GET("api/booking/photos/{id}")
+    Call<BookingPhotoReadAll> bookingPhotoReadAll(@HeaderMap Map<String, String> headers, @Path("id") String id);
 
+    @Multipart
+    @POST("api/booking/upload-photo")
+    Call<BookingPhotoUpload> bookingPhotoUpload(@Header("Authorization") String accessToken,
+                                                @Header("Type") String type,
+                                                @Part("booking_id") RequestBody bookingId,
+                                                @Part MultipartBody.Part file);
+
+    @DELETE("api/booking/photo/{id}")
+    Call<BookingPhotoDelete> bookingPhotoDelete(@HeaderMap Map<String, String> header, @Path("id") int id);
 }
