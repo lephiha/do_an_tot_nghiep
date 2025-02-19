@@ -233,9 +233,9 @@
 <string name="sunday">Sunday</string>
 <string name="vibrate">Vibrate</string>
 <string name="note_6">To make the examination process faster, we encourage patients to provide more medical records, treatment protocols, prescriptions, etc. that the patient has used before.</string>
-<string name="default_booking_name">Booking name: Nguyễn Thành Phong</string>
-<string name="default_booking_phone">Booking patient: 0366.253.623</string>
-<string name="default_patient_name">Patient name: Nguyễn Thành Phong</string>
+<string name="default_booking_name">Booking name: Lê Phi Hà</string>
+<string name="default_booking_phone">Booking patient: 0392.405.600</string>
+<string name="default_patient_name">Patient name: Lê Phi Hà</string>
 <string name="photo">Photo</string>
 <string name="note_7">These photos below are photos that you have been uploaded. To remove unexpected photo, swipe from the right.</string>
 <string name="booking_history">Booking history</string>

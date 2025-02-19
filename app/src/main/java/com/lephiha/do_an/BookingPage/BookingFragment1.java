@@ -2,15 +2,19 @@ package com.lephiha.do_an.BookingPage;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,6 +23,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.lephiha.do_an.Container.BookingCreate;
 import com.lephiha.do_an.Helper.Dialog;
 import com.lephiha.do_an.Helper.GlobaleVariable;
 import com.lephiha.do_an.Helper.LoadingScreen;
@@ -28,11 +33,22 @@ import com.lephiha.do_an.Model.Service;
 import com.lephiha.do_an.Model.User;
 import com.lephiha.do_an.R;
 import com.lephiha.do_an.configAPI.Constant;
+import com.lephiha.do_an.configAPI.HTTPRequest;
+import com.lephiha.do_an.configAPI.HTTPService;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONObject;
+
 import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 //fragment 1 -> 3 -> 2
 
@@ -74,7 +90,7 @@ public class BookingFragment1 extends Fragment {
 
         setupComponent(view);
         setupViewModel();
-        setupEvent();
+        setupEvent(view);
         return view;
     }
 
@@ -242,7 +258,7 @@ public class BookingFragment1 extends Fragment {
     }
 
     //set event
-    private void setupEvent() {
+    private void setupEvent(View view) {
         // prepare time + date picker for buuton
         //get today
         Calendar calendar = Calendar.getInstance();
@@ -270,6 +286,191 @@ public class BookingFragment1 extends Fragment {
             txtPatientBirthday.setText(output);
         };
 
-        
+        //date picker for appointment date
+        DatePickerDialog.OnDateSetListener appointmentDateDialog = (view13, year1, month1, day1) -> {
+            calendar.set(Calendar.YEAR, year1);
+            calendar.set(Calendar.MONTH, month1);
+            calendar.set(Calendar.DAY_OF_MONTH, day1);
+
+            String dayFormatted = String.valueOf(day1);
+            String monthFormatted = String.valueOf(month1+1);
+            if( day1 < 10)
+            {
+                dayFormatted = "0" + day1;
+            }
+            if( month1 < 10 )
+            {
+                monthFormatted = "0" + month1;
+            }
+            String output = year1 + "-" + monthFormatted + "-" + dayFormatted;
+            txtAppointmentDate.setText(output);
+        };
+
+        //time picker for appointment time
+        TimePickerDialog.OnTimeSetListener appointmentTimeDialog = (timePicker, hour, minute) -> {
+            String hourFormatted = String.valueOf(hour);
+            String minuteFormatted = String.valueOf(minute);
+            if(hour < 10)
+            {
+                hourFormatted = "0" + hour;
+            }
+            if( minute < 10)
+            {
+                minuteFormatted = "0" + minute;
+            }
+            String output = hourFormatted + ":" + minuteFormatted;
+            txtAppointmentTime.setText(output);
+        };
+
+        //listen click event for buttons
+        txtPatientBirthday.setOnClickListener(birthdayView -> new DatePickerDialog(context, birthday, year, month, day).show());
+
+        txtAppointmentTime.setOnClickListener(appointmentTimeView -> new TimePickerDialog(context, appointmentTimeDialog, 9, 0, true).show());
+
+        txtAppointmentDate.setOnClickListener(appointmentDateView -> new DatePickerDialog(context, appointmentDateDialog, year, month, day).show());
+
+        btnConfirm.setOnClickListener(view1 -> {
+            //1. user must fill up all mandatory fields
+            boolean flag = areMandatoryFieldsFilledUp();
+            if (!flag) {
+                return;
+            }
+
+            //2. get date that user enters
+            String bookingName = txtBookingName.getText().toString();
+            String bookingPhone = txtBookingPhone.getText().toString();
+            String patientName = txtPatientName.getText().toString();
+
+            int selectedId = rdPatientRender.getCheckedRadioButtonId();
+            RadioButton radioButton = view.findViewById(selectedId);
+            String patientGender = radioButton.getHint().toString();
+            String patientAddress = txtPatientAddress.getText().toString();
+            String patientReason = txtPatientReason.getText().toString();
+
+            String patientBirthday = txtPatientBirthday.getText().toString();
+            String appointmentDate = txtAppointmentDate.getText().toString();
+            String appointmentTime = txtAppointmentTime.getText().toString();
+
+            //3. setup header + body for Post request
+            Map<String, String> header = globaleVariable.getHeaders();
+            Map<String , String> body = new HashMap<>();
+            body.put("serviceId", serviceId);
+            body.put("doctorId", doctorId);
+            body.put("bookingName", bookingName);
+            body.put("bookingPhone", bookingPhone);
+            body.put("name", patientName);
+            body.put("gender", patientGender);
+            body.put("address", patientAddress);
+            body.put("reason", patientReason);
+            body.put("birthday", patientBirthday);
+            body.put("appointmentTime", appointmentTime);
+            body.put("appontmentDate", appointmentDate);
+
+            //load truc tiep POST request = retrofit để tránh việc tạo ra nh observer mỗi lần ấn nút gửi yêu cầu
+            loadingScreen.start();
+            sendBookingCreate(header, body);
+        });
+    }
+
+    //check mandatory filled up
+    private boolean areMandatoryFieldsFilledUp() {
+        String bookingName = txtBookingName.getText().toString();
+        String  bookingPhone = txtBookingPhone.getText().toString();
+        String patientName = txtPatientName.getText().toString();
+        String appointmentDate = txtAppointmentDate.getText().toString();
+        String appointmentTime = txtAppointmentTime.getText().toString();
+
+        String[] requiredFields = {
+                bookingName, bookingPhone, patientName, appointmentDate, appointmentTime
+        };
+
+        for (String element : requiredFields) {
+            if (TextUtils.isEmpty(element)) {
+                dialog.announce();
+                dialog.show(R.string.attention,context.getString(R.string.you_do_not_fill_mandatory_field_try_again), R.drawable.ic_info);
+                dialog.btnOK.setOnClickListener(view -> dialog.close());
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void sendBookingCreate(Map<String, String > header, Map<String,String> body) {
+        //2
+        Retrofit service = HTTPService.getInstance();
+        HTTPRequest api = service.create(HTTPRequest.class);
+
+        //3
+        String serviceId = body.get("serviceId");
+        String doctorId = body.get("doctorId");
+        String bookingName = body.get("bookingName");
+        String bookingPhone = body.get("bookingPhone");
+        String name = body.get("name");
+        String gender = body.get("gender");
+        String address = body.get("address");
+        String reason = body.get("reason");
+        String birthday = body.get("birthday");
+        String appointmentTime = body.get("appointmentTime");
+        String appointmentDate = body.get("appointmentDate");
+
+        Call<BookingCreate> container = api.bookingCreate(header, doctorId, serviceId,
+                bookingName, bookingPhone, name, gender, address, reason, birthday, appointmentTime, appointmentDate);
+
+        //4
+        container.enqueue(new Callback<BookingCreate>() {
+            @Override
+            public void onResponse(@NonNull Call<BookingCreate> call,@NonNull Response<BookingCreate> response) {
+                loadingScreen.stop();
+
+                if (response.isSuccessful()) {
+                    BookingCreate content = response.body();
+                    assert content != null;
+                    processWithPOSTResponse(content);
+                }
+                if (response.errorBody() !=  null) {
+                    try {
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        System.out.println(jObjError);
+                    }
+                    catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<BookingCreate> call,@NonNull Throwable t) {
+                loadingScreen.stop();
+                System.out.println("Booking Fragment - Create - error: " + t.getMessage());
+            }
+        });
+    }
+
+    //process with th response from POST request that we send to server
+
+    private void processWithPOSTResponse(BookingCreate response) {
+        //1. prepare dialog if error
+        dialog.announce();
+        dialog.btnOK.setOnClickListener(view -> dialog.close());
+
+        //2. show result
+
+        try {
+            int result = response.getResult();
+            if (result == 1) { // create successfully -> next booking fragment
+                Toast.makeText(context, context.getString(R.string.success), Toast.LENGTH_SHORT).show();
+                String fragmentTag = "bookingFragment3";
+
+                Bundle bundle = new Bundle();
+                bundle.putString("bookingId", String.valueOf(response.getData().getId()));
+
+
+            }
+        }
+        catch (Exception e) {
+            System.out.println(TAG);
+            System.out.println(e);
+            dialog.show(R.string.attention, context.getString(R.string.oops_there_is_an_issue), R.drawable.ic_info);
+        }
     }
 }
