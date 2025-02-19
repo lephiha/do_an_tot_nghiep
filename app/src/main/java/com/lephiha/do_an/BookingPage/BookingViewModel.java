@@ -61,7 +61,7 @@ public class BookingViewModel extends ViewModel {
     }
 
     /** Booking read by id **/
-    private MutableLiveData<BookingReadByID> getBookingReadByIdResponse() {
+    public MutableLiveData<BookingReadByID> getBookingReadByIdResponse() {
         if (bookingReadByIdResponse == null) {
             bookingReadByIdResponse = new MutableLiveData<>();
         }
