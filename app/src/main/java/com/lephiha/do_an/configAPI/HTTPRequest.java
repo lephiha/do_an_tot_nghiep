@@ -1,6 +1,9 @@
 package com.lephiha.do_an.configAPI;
 
 
+import com.lephiha.do_an.Container.AppointmentQueue;
+import com.lephiha.do_an.Container.AppointmentReadAll;
+import com.lephiha.do_an.Container.AppointmentReadByID;
 import com.lephiha.do_an.Container.BookingCancel;
 import com.lephiha.do_an.Container.BookingCreate;
 import com.lephiha.do_an.Container.BookingPhotoDelete;
@@ -141,4 +144,15 @@ public interface HTTPRequest {
 
     @DELETE("api/booking/photo/{id}")
     Call<BookingPhotoDelete> bookingPhotoDelete(@HeaderMap Map<String, String> header, @Path("id") int id);
+
+    //appointment
+    @GET("api/patient/appointments")
+    Call<AppointmentReadAll> appointmentReadAll(@HeaderMap Map <String, String> header, @QueryMap Map<String, String> parameters);
+
+    @GET("api/patient/appointments/{id}")
+    Call<AppointmentReadByID> appointmentReadByID(@HeaderMap Map <String, String> header, @Path("id") String appointmentId);
+
+    //appointment queue
+    @GET("api/appointment-queue")
+    Call<AppointmentQueue> appointmentQueue(@HeaderMap Map <String, String> header, @QueryMap Map<String, String> parameters);
 }
