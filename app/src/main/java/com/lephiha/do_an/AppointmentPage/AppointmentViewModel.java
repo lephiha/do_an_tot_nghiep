@@ -62,7 +62,7 @@ public class AppointmentViewModel extends ViewModel {
         return appointmentQueueResponse;
     }
     public void getQueue(Map<String, String> header, Map<String, String> parameters) {
-        animation = repository.getAnimation();
+        //animation = repository.getAnimation();
         appointmentQueueResponse = queueRepository.getAppointmentQueue(header, parameters);
     }
 }
