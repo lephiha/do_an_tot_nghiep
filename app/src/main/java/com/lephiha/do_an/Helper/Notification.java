@@ -78,4 +78,14 @@ public class Notification extends android.app.Notification{
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true);
     }
+
+    public void show() {
+        if (NotificationManagerCompat.from(context).areNotificationsEnabled()) {
+            NotificationCompat.Builder builder = this.builder;
+            notificationManager.notify(notificationId, builder.build());
+        } else {
+            // Handle the case where notifications are not enabled
+            System.out.println("Notifications are not enabled for this app.");
+        }
+    }
 }

@@ -175,7 +175,7 @@
 <string name="reason">Diagnostic</string>
 <string name="appointment_reason">Appoitment reason</string>
 <string name="statusAfter">Condition after treatment</string>
-<string name="default_datetime2">Date: 30-11-2022</string>
+<string name="default_datetime2">Date: 30-01-2025</string>
 <string name="default_treatment_name">Name: Thực phẩm bổ sung DutchLady</string>
 <string name="default_treatment_type">Type: Uống</string>
 <string name="default_treatment_times">Times: 7</string>

@@ -23,6 +23,7 @@ public class AppointmentFragment extends Fragment {
 
     private RecyclerView recyclerView;
 
+
     private Context context;
     private Activity activity;
     private Dialog dialog;
