@@ -102,9 +102,9 @@ public class AppearanceActivity extends AppCompatActivity {
 
         //set selected language in spin
         String applicationLanguage = sharedPreferences.getString("language", "Tiếng Việt");
-        String vietnamese = "Tiếng Việt";
-        String english = "English";
-        String germany = "Deutsch";
+        String vietnamese = getString(R.string.vietnamese);
+        String english = getString(R.string.english);
+        String germany = getString(R.string.deutsch);
 
         System.out.println(TAG);
 //        System.out.println("application language: " + applicationLanguage);
@@ -125,18 +125,20 @@ public class AppearanceActivity extends AppCompatActivity {
         btnBack.setOnClickListener(view -> finish());
 
         //Switch on/off
-        switchDarkMode.setOnCheckedChangeListener((compoundButton,flag) ->{
+        switchDarkMode.setOnCheckedChangeListener((compoundButton, flag) -> {
             int value;
-            if (flag) {
+            if(flag)
+            {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                 value = AppCompatDelegate.MODE_NIGHT_YES;
             }
-            else {
+            else
+            {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 value = AppCompatDelegate.MODE_NIGHT_NO;
             }
-            sharedPreferences.edit().putInt("darkMode", value).apply();
-        } );
+            sharedPreferences.edit().putInt("darkMode",value).apply();
+        });
     }
 
     ///set language
@@ -150,16 +152,16 @@ public class AppearanceActivity extends AppCompatActivity {
             return;
         }
 
-        String vietnamese = "Tiếng Việt";
-        String english = "English";
-        String germany = "Deutsch";
+        String vietnamese = getString(R.string.vietnamese);
+        String english = getString(R.string.english);
+        String deutsch = getString(R.string.deutsch);
 
         Locale myLocale = new Locale("en");
 
         if (Objects.equals(language, vietnamese)) {
             myLocale = new Locale("vi");
         }
-        if (Objects.equals(language, germany)) {
+        if (Objects.equals(language, deutsch)) {
             myLocale = new Locale("de");
         }
 
@@ -174,7 +176,7 @@ public class AppearanceActivity extends AppCompatActivity {
         finish();
         startActivity(refresh);
 
-        //save app's language in ROM
-        sharedPreferences.edit().putString("language", language).apply();
+        //save the application's language in ROM
+        sharedPreferences.edit().putString("language",language ).apply();
     }
 }

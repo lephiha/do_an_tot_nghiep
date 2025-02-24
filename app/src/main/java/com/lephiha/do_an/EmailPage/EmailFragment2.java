@@ -65,7 +65,7 @@ public class EmailFragment2 extends Fragment {
                     "\n\n "+ requireContext().getString(R.string.content) + ": " + txtContent;
 
             Uri uri = Uri.parse("mailto:"). buildUpon()
-                    .appendQueryParameter("to", "phihasky@gmail.com")
+                    .appendQueryParameter("to", "leeha867@gmail.com")
                     .appendQueryParameter("subject", txtTitle)
                     .appendQueryParameter("body", body).build();
 

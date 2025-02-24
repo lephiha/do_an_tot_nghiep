@@ -36,7 +36,7 @@ public class AppointmentQueue {
         return quantity;
     }
 
-    public List<Queue> getData() {
+    public List<com.lephiha.do_an.Model.Queue> getData() {
         return data;
     }
 }
