@@ -14,6 +14,9 @@ import com.lephiha.do_an.Container.BookingReadByID;
 import com.lephiha.do_an.Container.DoctorReadAll;
 import com.lephiha.do_an.Container.DoctorReadByID;
 import com.lephiha.do_an.Container.Login;
+import com.lephiha.do_an.Container.NotificationCreate;
+import com.lephiha.do_an.Container.NotificationMarkAllAsRead;
+import com.lephiha.do_an.Container.NotificationMarkAsRead;
 import com.lephiha.do_an.Container.NotificationReadAll;
 import com.lephiha.do_an.Container.PatientProfile;
 import com.lephiha.do_an.Container.PatientProfileChangeAvatar;
@@ -92,6 +95,20 @@ public interface HTTPRequest {
     @GET("api/patient/notifications")
     Call<NotificationReadAll> notificationReadAll(@HeaderMap Map<String, String> header);
 
+    @POST("api/patient/notifications/mark-as-read/{id}")
+    Call<NotificationMarkAsRead> notificationMarkAsRead(@HeaderMap Map<String, String> header, @Path("id") String notificationId);
+
+
+    @POST("api/patient/notifications")
+    Call<NotificationMarkAllAsRead> notificationMarkAllAsRead(@HeaderMap Map <String, String> header);
+
+    @FormUrlEncoded
+    @PUT("api/patient/notifications")
+    Call<NotificationCreate> notificationCreate(@HeaderMap Map <String, String> header,
+                                                @Field("message") String message,
+                                                @Field("record_id") String recordId,
+                                                @Field("record_type") String recordType);
+
 
 
     //Weather - opent weather map.org
@@ -155,4 +172,10 @@ public interface HTTPRequest {
     //appointment queue
     @GET("api/appointment-queue")
     Call<AppointmentQueue> appointmentQueue(@HeaderMap Map <String, String> header, @QueryMap Map<String, String> parameters);
+
+
+
+
+
+
 }
