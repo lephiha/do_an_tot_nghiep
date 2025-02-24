@@ -203,7 +203,7 @@ public class AlarmPageFragment extends Fragment {
             startActivity(intentChoose);
         });
     }
-    
+
 
     //remove an element from array by its value
 
