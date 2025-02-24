@@ -18,7 +18,7 @@ public class  Constant {
 
     public static String VIDEO_PATH()
     {
-        return "https://www.youtube.com/watch?v=W4JA4dbscis&ab_channel=UmbrellaCorporation4";
+        return "https://www.youtube.com/watch?v=abPmZCZZrFA";
     }
     //define app name
     public static String APP_NAME()
