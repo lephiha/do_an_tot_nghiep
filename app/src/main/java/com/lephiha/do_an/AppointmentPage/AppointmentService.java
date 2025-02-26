@@ -6,6 +6,7 @@ import android.app.Notification;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Build;
+import android.os.CountDownTimer;
 import android.os.PowerManager;
 import android.os.SystemClock;
 import android.util.Log;
@@ -215,6 +216,35 @@ public class AppointmentService extends IntentService{
         }
     }
 
+    //show message (text is the short text, bigtext full)
+
+    public void showMessageInDevice(String text, String bigText) {
+        //tao nd cho notif
+        com.lephiha.do_an.Helper.Notification notification = new com.lephiha.do_an.Helper.Notification(this);
+        String title = this.getString(R.string.app_name);
+        notification.setup(title, text, bigText);
+        notification.show();
+
+        //phat am thanh
+
+        mediaPlayer = MediaPlayer.create(this, R.raw.alarm_sound_3);
+        int duration = 1000*10; //run 10s
+        int interval = 1000; //count down 1s
+
+        CountDownTimer timer = new CountDownTimer(duration, interval) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                mediaPlayer.start();
+            }
+
+            @Override
+            public void onFinish() {
+                mediaPlayer.stop();
+            }
+        };
+        timer.start();
+    }
+
     //create notif in server (help users to watch notif again)
     private void creatNotificationInserver(String message) {
         //1- prepare header + parameters
@@ -225,6 +255,33 @@ public class AppointmentService extends IntentService{
         HTTPRequest api = service.create(HTTPRequest.class);
 
         //3
-        Call<NotificationCreate> container = api
+        Call<NotificationCreate> container = api.notificationCreate(headers, message, recordId, recordType);
+
+        //4
+        container.enqueue(new Callback<NotificationCreate>() {
+            @Override
+            public void onResponse(@NonNull Call<NotificationCreate> call,@NonNull Response<NotificationCreate> response) {
+                if (response.isSuccessful()) {
+                    NotificationCreate content = response.body();
+                    assert content != null;
+                    System.out.println(TAG);
+                    System.out.println(content.getMsg());
+                }
+                if (response.errorBody() != null) {
+                    try {
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        System.out.println(jObjError);
+                    }
+                    catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<NotificationCreate> call, @NonNull Throwable t) {
+                System.out.println("Appointment-page Service - create notification in server - error: " + t.getMessage());
+            }
+        });
     }
 }

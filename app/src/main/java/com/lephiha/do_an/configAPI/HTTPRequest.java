@@ -21,6 +21,7 @@ import com.lephiha.do_an.Container.NotificationReadAll;
 import com.lephiha.do_an.Container.PatientProfile;
 import com.lephiha.do_an.Container.PatientProfileChangeAvatar;
 import com.lephiha.do_an.Container.PatientProfileChangePersonalInformation;
+import com.lephiha.do_an.Container.RecordReadByID;
 import com.lephiha.do_an.Container.ServiceReadAll;
 import com.lephiha.do_an.Container.ServiceReadByID;
 import com.lephiha.do_an.Container.SpecialityReadAll;
@@ -172,6 +173,11 @@ public interface HTTPRequest {
     //appointment queue
     @GET("api/appointment-queue")
     Call<AppointmentQueue> appointmentQueue(@HeaderMap Map <String, String> header, @QueryMap Map<String, String> parameters);
+
+
+    //record
+    @GET("api/patient/appointments/records/{id}")
+    Call<RecordReadByID> recordReadById(@HeaderMap Map <String, String> header, @Path("id") String recordId);
 
 
 
