@@ -2,9 +2,10 @@ package com.lephiha.do_an.Container;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.lephiha.do_an.Model.Queue;
 
 import java.util.List;
-import java.util.Queue;
+
 
 public class AppointmentQueue {
 
@@ -25,6 +26,7 @@ public class AppointmentQueue {
     private List<Queue> data;
 
     public int getResult () {
+
         return result;
     }
 
@@ -36,7 +38,7 @@ public class AppointmentQueue {
         return quantity;
     }
 
-    public List<com.lephiha.do_an.Model.Queue> getData() {
+    public List<Queue> getData() {
         return data;
     }
 }

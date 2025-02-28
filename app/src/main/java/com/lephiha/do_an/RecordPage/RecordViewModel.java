@@ -12,7 +12,7 @@ public class RecordViewModel extends ViewModel {
 
     private RecordRepository repository;
 
-    private void instantiate() {
+    public void instantiate() {
         if (repository == null) {
             repository  = new RecordRepository();
         }
