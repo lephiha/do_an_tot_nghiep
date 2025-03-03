@@ -23,7 +23,7 @@ public class RecordReadByID {
         return msg;
     }
 
-    public Record getData() {
+    public com.lephiha.do_an.Model.Record getData() {
         return data;
     }
 }

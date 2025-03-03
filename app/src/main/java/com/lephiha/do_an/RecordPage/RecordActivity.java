@@ -22,7 +22,6 @@ import com.squareup.picasso.Picasso;
 import java.util.Map;
 
 public class RecordActivity extends AppCompatActivity {
-
     private final String TAG = "Record Activity";
 
     private String appointmentId;
@@ -52,7 +51,7 @@ public class RecordActivity extends AppCompatActivity {
         setupViewModel();
     }
 
-    //set component
+    //setup component
     private void setupComponent() {
         dialog = new Dialog(this);
         GlobaleVariable globaleVariable = (GlobaleVariable) this.getApplication();
@@ -60,6 +59,7 @@ public class RecordActivity extends AppCompatActivity {
         loadingScreen = new LoadingScreen(this);
 
         appointmentId = getIntent().getStringExtra("appointmentId");
+
         if(TextUtils.isEmpty(appointmentId) )
         {
             System.out.println(TAG);
@@ -71,6 +71,7 @@ public class RecordActivity extends AppCompatActivity {
                 this.finish();
             });
         }
+
 
         imgDoctorAvatar = findViewById(R.id.imgDoctorAvatar);
         txtDoctorName = findViewById(R.id.txtDoctorName);
@@ -86,24 +87,22 @@ public class RecordActivity extends AppCompatActivity {
         wvwDescription = findViewById(R.id.wvwDescription);
     }
 
-    //setup ViewModel
     private void setupViewModel() {
-        //set view model
+        //setup view model
         RecordViewModel viewModel = new ViewModelProvider(this).get(RecordViewModel.class);
         viewModel.instantiate();
 
         //send request
         viewModel.readByID(header, appointmentId);
-        viewModel.getReadByIDResponse().observe(this, response->{
+        viewModel.getReadByIDResponse().observe(this, response -> {
             try {
                 int result = response.getResult();
-                /*result == 1 => luu thong tin nguoi dung va vao homepage*/
-                if (result == 1) {
+                if (result == 1) { //luu user vaof homepage
                     Record record = response.getData();
                     printRecordIn4(record);
+
                 }
-                /*result == 0 => thong bao va thoat ung dung*/
-                if (result == 0) {
+                if (result == 0) { //thong bao va thoat ung dung
                     System.out.println(TAG);
                     System.out.println("READ ALL");
                     System.out.println("shut down by result == 0");
@@ -114,8 +113,8 @@ public class RecordActivity extends AppCompatActivity {
                         finish();
                     });
                 }
-
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 System.out.println(TAG);
                 System.out.println("READ ALL");
                 System.out.println("shut down by exception");
@@ -132,27 +131,24 @@ public class RecordActivity extends AppCompatActivity {
 
         //animation
         viewModel.getAnimation().observe(this, aBoolean -> {
-            if( aBoolean )
-            {
+            if (aBoolean) {
                 loadingScreen.start();
-            }
-            else
-            {
+            } else {
                 loadingScreen.stop();
             }
         });
     }
 
-    //print record in4 to screen
-
+    //print record info
     private void printRecordIn4(Record record) {
-
         //doctor in4
-        if( record.getDoctor().getAvatar().length() > 0){
+
+        if (record.getDoctor().getAvatar().length() >0) {
             String avatar = Constant.UPLOAD_URI() + record.getDoctor().getAvatar();
             Picasso.get().load(avatar).into(imgDoctorAvatar);
         }
-        String doctorName = getString(R.string.doctor) + " " + record.getDoctor().getName();
+
+        String doctorName =getString(R.string.doctor) + " " +record.getDoctor().getName();
         txtDoctorName.setText(doctorName);
 
         String datetime = Tooltip.beautifierDatetime(this, record.getCreateAt());
@@ -173,5 +169,4 @@ public class RecordActivity extends AppCompatActivity {
                 +"</body></html>";
         wvwDescription.loadDataWithBaseURL(null, description, "text/HTML", "UTF-8", null);
     }
-
 }
