@@ -26,6 +26,8 @@ import com.lephiha.do_an.Container.ServiceReadAll;
 import com.lephiha.do_an.Container.ServiceReadByID;
 import com.lephiha.do_an.Container.SpecialityReadAll;
 import com.lephiha.do_an.Container.SpecialityReadByID;
+import com.lephiha.do_an.Container.TreatmentReadAll;
+import com.lephiha.do_an.Container.TreatmentReadByID;
 import com.lephiha.do_an.Container.Weather;
 
 import java.util.Map;
@@ -179,7 +181,13 @@ public interface HTTPRequest {
     @GET("api/patient/appointments/records/{id}")
     Call<RecordReadByID> recordReadById(@HeaderMap Map <String, String> header, @Path("id") String recordId);
 
+    //treatment
 
+    @GET("api/patient/treatments/{id}")
+    Call<TreatmentReadAll> treatmentReadAll(@HeaderMap Map <String, String> header, @Path("id") String appointmentId);
+
+    @GET("api/patient/treatment/{id}")
+    Call<TreatmentReadByID> treatmentReadByID(@HeaderMap Map <String, String> header, @Path("id") String treatmentId);
 
 
 

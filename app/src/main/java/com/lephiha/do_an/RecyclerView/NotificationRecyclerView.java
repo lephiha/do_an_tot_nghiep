@@ -36,7 +36,7 @@ public class NotificationRecyclerView extends RecyclerView.Adapter<NotificationR
 
     @NonNull
     @Override
-    public NotificationRecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.recycler_view_notification, parent, false);
@@ -44,7 +44,7 @@ public class NotificationRecyclerView extends RecyclerView.Adapter<NotificationR
     }
 
     @Override
-    public void onBindViewHolder(@NonNull NotificationRecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         Notification notification = list.get(position);
 
