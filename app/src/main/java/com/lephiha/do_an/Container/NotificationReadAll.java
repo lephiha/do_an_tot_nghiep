@@ -1,9 +1,8 @@
 package com.lephiha.do_an.Container;
 
-import android.app.Notification;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.lephiha.do_an.Model.Notification;
 
 import java.util.List;
 
@@ -48,4 +47,5 @@ public class NotificationReadAll {
     public List<Notification> getData() {
         return data;
     }
+
 }

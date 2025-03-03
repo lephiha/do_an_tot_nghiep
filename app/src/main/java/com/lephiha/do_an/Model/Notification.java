@@ -3,7 +3,7 @@ package com.lephiha.do_an.Model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Notificationn {
+public class Notification {
 
     @SerializedName("id")
     @Expose
