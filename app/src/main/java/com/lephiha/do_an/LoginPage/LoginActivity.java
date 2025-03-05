@@ -116,7 +116,7 @@ public class LoginActivity extends AppCompatActivity {
             }
             String phoneNumberFormatted = "+84" + phoneNumber;
 
-            //2. ssetup phone auth op
+            //2. setup phone auth op
             PhoneAuthOptions options = PhoneAuthOptions.newBuilder(firebaseAuth)
                     .setPhoneNumber(phoneNumberFormatted) //phone to verify
                     .setTimeout(60L, TimeUnit.SECONDS) //timeout + unit
