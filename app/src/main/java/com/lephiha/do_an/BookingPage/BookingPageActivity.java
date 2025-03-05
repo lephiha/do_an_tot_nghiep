@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+
 import com.lephiha.do_an.R;
 
 public class BookingPageActivity extends AppCompatActivity {
@@ -62,7 +63,9 @@ public class BookingPageActivity extends AppCompatActivity {
     //override btn back of device
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        //super.onBackPressed();
         finish();
     }
+
+
 }

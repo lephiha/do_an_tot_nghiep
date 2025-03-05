@@ -2,6 +2,7 @@ package com.lephiha.do_an.Container;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.lephiha.do_an.Model.Record;
 
 public class RecordReadByID {
     @SerializedName("result")
@@ -23,7 +24,7 @@ public class RecordReadByID {
         return msg;
     }
 
-    public com.lephiha.do_an.Model.Record getData() {
+    public Record getData() {
         return data;
     }
 }
