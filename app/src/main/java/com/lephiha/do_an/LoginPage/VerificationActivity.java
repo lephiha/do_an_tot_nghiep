@@ -1,6 +1,5 @@
 package com.lephiha.do_an.LoginPage;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.lifecycle.ViewModelProvider;
@@ -25,7 +24,7 @@ import com.lephiha.do_an.HomePage.HomePageActivity;
 import com.lephiha.do_an.Model.User;
 import com.lephiha.do_an.R;
 
-public class VertificationActivity extends AppCompatActivity{
+public class VerificationActivity extends AppCompatActivity{
 
     private final String TAG = "Verification-Activity";
     private String phoneNumber;
@@ -49,7 +48,7 @@ public class VertificationActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_vetification);
+        setContentView(R.layout.activity_verification);
 
         getVariable();
         setupComponent();
@@ -133,7 +132,7 @@ public class VertificationActivity extends AppCompatActivity{
 
                 /*hien thi thong bao la dang nhap thanh cong*/
                 Toast.makeText(this, getString(R.string.login_successfully), Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(VertificationActivity.this, HomePageActivity.class);
+                Intent intent = new Intent(VerificationActivity.this, HomePageActivity.class);
                 startActivity(intent);
             }
             /*Case 2 - login failed*/
@@ -195,7 +194,7 @@ public class VertificationActivity extends AppCompatActivity{
                     {
                         if (task.getException() instanceof FirebaseAuthInvalidCredentialsException)
                         {
-                            Toast.makeText(VertificationActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(VerificationActivity.this, "Error", Toast.LENGTH_SHORT).show();
                             Log.d(TAG, "Error: " + task.getException() );
                         }
                     }

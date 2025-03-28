@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="30dp"
+    android:background="@color/colorBackground">
+
+    <!-- Logo ứng dụng -->
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginBottom="40dp"
+        android:src="@drawable/logo"
+        android:contentDescription="App Logo"/>
+
+    <!-- Tiêu đề -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chọn tài khoản để đăng nhập"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="20dp"/>
+
+    <!-- Nút Đăng nhập Bác sĩ -->
+    <Button
+        android:id="@+id/btnDoctorLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ĐĂNG NHẬP VỚI TƯ CÁCH BÁC SĨ"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:padding="12dp"
+        android:backgroundTint="@color/black"
+        android:textColor="@android:color/white"
+        android:layout_marginBottom="15dp"/>
+
+    <!-- Nút Đăng nhập Bệnh nhân -->
+    <Button
+        android:id="@+id/btnPatientLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ĐĂNG NHẬP VỚI TƯ CÁCH BỆNH NHÂN"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:padding="12dp"
+        android:backgroundTint="@color/colorBlue"
+        android:textColor="@android:color/white"/>
+
+</LinearLayout>

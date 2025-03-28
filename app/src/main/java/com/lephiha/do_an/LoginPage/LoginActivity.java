@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -159,7 +158,7 @@ public class LoginActivity extends AppCompatActivity {
                                     System.out.println("phone number: " + phoneNumber);
                                     System.out.println("verification Id: " + verificationId);
 
-                                    Intent intent = new Intent(LoginActivity.this, VertificationActivity.class);
+                                    Intent intent = new Intent(LoginActivity.this, VerificationActivity.class);
                                     intent.putExtra("verificationId", verificationId);
                                     intent.putExtra("phoneNumber", phoneNumber);
                                     startActivity(intent);

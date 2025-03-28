@@ -150,6 +150,13 @@
                 android:textStyle="bold" /><!-- end POSITION -->
 
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/patient_numerical_order"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="12sp" />
+
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="10dp"/>
@@ -176,12 +183,6 @@
                 android:layout_height="10dp"/>
 
             <!-- PATIENT NAME -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/patient_numerical_order"
-                android:textColor="@color/colorTextBlack"
-                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/txtNumericalOrder"

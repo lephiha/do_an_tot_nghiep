@@ -1,15 +1,17 @@
 package com.lephiha.do_an;
 
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import androidx.annotation.NonNull;
 
-import com.google.gson.JsonObject;
-import org.json.JSONObject;
+
+
 import com.lephiha.do_an.Container.PatientProfile;
 import com.lephiha.do_an.configAPI.HTTPRequest;
 import com.lephiha.do_an.configAPI.HTTPService;
+
+import org.json.JSONObject;
 
 import java.util.Map;
 
@@ -39,8 +41,8 @@ public class MainViewModal extends ViewModel {
 
         container.enqueue(new Callback<PatientProfile>() {
             @Override
-            public void onResponse(Call<PatientProfile> call, Response<PatientProfile> returnedResponse) {
-                if(returnedResponse.isSuccessful()) {
+            public void onResponse(@NonNull Call<PatientProfile> call, @NonNull Response<PatientProfile> returnedResponse) {
+                if (returnedResponse.isSuccessful()) {
                     PatientProfile content = returnedResponse.body();
                     response.setValue(content);
                     //System.out.println(TAG);
@@ -50,9 +52,8 @@ public class MainViewModal extends ViewModel {
                 if (returnedResponse.errorBody() != null) {
                     try {
                         JSONObject jObjError = new JSONObject(returnedResponse.errorBody().string());
-                        System.out.println( jObjError );
-                    }
-                    catch (Exception e) {
+                        System.out.println(jObjError);
+                    } catch (Exception e) {
                         System.out.println(e.getMessage());
                     }
                     response.setValue(null);
@@ -60,7 +61,7 @@ public class MainViewModal extends ViewModel {
             }
 
             @Override
-            public void onFailure(Call<PatientProfile> call, Throwable t) {
+            public void onFailure(@NonNull Call<PatientProfile> call, @NonNull Throwable t) {
                 System.out.println(TAG);
                 System.out.println(t);
                 response.setValue(null);

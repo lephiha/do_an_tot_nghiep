@@ -49,7 +49,7 @@ public class LoginViewModel extends ViewModel {
         //3
         container.enqueue(new Callback<Login>() {
             @Override
-            public void onResponse(Call<Login> call, Response<Login> result) {
+            public void onResponse(@NonNull Call<Login> call,@NonNull Response<Login> result) {
                 animation.setValue(false);
                 if(result.isSuccessful()) {
                     Login content = result.body();
@@ -61,7 +61,7 @@ public class LoginViewModel extends ViewModel {
             }
 
             @Override
-            public void onFailure(Call<Login> call, Throwable t) {
+            public void onFailure(@NonNull Call<Login> call,@NonNull Throwable t) {
                 animation.setValue(false);
                 loginWithPhoneResponse.setValue(null);
                 System.out.println("Login with Phone Number - throwable: " + t.getMessage());

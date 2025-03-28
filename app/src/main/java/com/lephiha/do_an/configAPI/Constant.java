@@ -10,6 +10,10 @@ public class  Constant {
     {
         return "http://192.168.56.1/Do_an_tot_nghiep_lph/";
     }
+//    public static String APP_PATH()
+//    {
+//        return "https://ee32-42-117-48-191.ngrok-free.app/Do_an_tot_nghiep_lph/";
+//    }
 
     public static String APP_PATH_EMULATOR()
     {

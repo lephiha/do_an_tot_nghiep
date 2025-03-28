@@ -6,6 +6,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ import com.lephiha.do_an.Helper.Dialog;
 import com.lephiha.do_an.Helper.GlobaleVariable;
 import com.lephiha.do_an.Helper.LoadingScreen;
 import com.lephiha.do_an.Helper.Tooltip;
+import com.lephiha.do_an.HomePage.HomePageActivity;
 import com.lephiha.do_an.Model.Doctor;
 import com.lephiha.do_an.Model.Service;
 import com.lephiha.do_an.Model.User;
@@ -323,11 +325,11 @@ public class BookingFragment1 extends Fragment {
         };
 
         //listen click event for buttons
-        txtPatientBirthday.setOnClickListener(birthdayView -> new DatePickerDialog(context, birthday, year, month, day).show());
+        txtPatientBirthday.setOnClickListener(birthdayView -> new DatePickerDialog(context,birthday,year,month,day).show());
 
-        txtAppointmentTime.setOnClickListener(appointmentTimeView -> new TimePickerDialog(context, appointmentTimeDialog, 9, 0, true).show());
+        txtAppointmentDate.setOnClickListener(appointmentDateView-> new DatePickerDialog(context, appointmentDateDialog, year, month, day).show());
 
-        txtAppointmentDate.setOnClickListener(appointmentDateView -> new DatePickerDialog(context, appointmentDateDialog, year, month, day).show());
+        txtAppointmentTime.setOnClickListener(appointmentTimeView-> new TimePickerDialog(context, appointmentTimeDialog, 9, 0, true).show() );
 
         btnConfirm.setOnClickListener(view1 -> {
             //1. user must fill up all mandatory fields
@@ -353,7 +355,7 @@ public class BookingFragment1 extends Fragment {
 
             //3. setup header + body for Post request
             Map<String, String> header = globaleVariable.getHeaders();
-            Map<String , String> body = new HashMap<>();
+            Map<String, String> body = new HashMap<>();
             body.put("serviceId", serviceId);
             body.put("doctorId", doctorId);
             body.put("bookingName", bookingName);
@@ -364,7 +366,7 @@ public class BookingFragment1 extends Fragment {
             body.put("reason", patientReason);
             body.put("birthday", patientBirthday);
             body.put("appointmentTime", appointmentTime);
-            body.put("appontmentDate", appointmentDate);
+            body.put("appointmentDate", appointmentDate);
 
             //load truc tiep POST request = retrofit để tránh việc tạo ra nh observer mỗi lần ấn nút gửi yêu cầu
             loadingScreen.start();
@@ -417,29 +419,32 @@ public class BookingFragment1 extends Fragment {
                 bookingName, bookingPhone, name, gender, address, reason, birthday, appointmentTime, appointmentDate);
 
         //4
+        Log.d("BookingRequest", "Sending request with data: " + bookingName + ", " + bookingPhone);
         container.enqueue(new Callback<BookingCreate>() {
             @Override
-            public void onResponse(@NonNull Call<BookingCreate> call,@NonNull Response<BookingCreate> response) {
+            public void onResponse(@NonNull Call<BookingCreate> call, @NonNull Response<BookingCreate> response) {
                 loadingScreen.stop();
-
-                if (response.isSuccessful()) {
+                if(response.isSuccessful())
+                {
                     BookingCreate content = response.body();
                     assert content != null;
                     processWithPOSTResponse(content);
                 }
-                if (response.errorBody() !=  null) {
-                    try {
+                if(response.errorBody() != null)
+                {
+                    try
+                    {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        System.out.println(jObjError);
+                        System.out.println( jObjError );
                     }
                     catch (Exception e) {
-                        System.out.println(e.getMessage());
+                        System.out.println( e.getMessage() );
                     }
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<BookingCreate> call,@NonNull Throwable t) {
+            public void onFailure(@NonNull Call<BookingCreate> call, @NonNull Throwable t) {
                 loadingScreen.stop();
                 System.out.println("Booking Fragment - Create - error: " + t.getMessage());
             }
@@ -455,9 +460,11 @@ public class BookingFragment1 extends Fragment {
 
         //2. show result
 
-        try {
+        try
+        {
             int result = response.getResult();
-            if (result == 1) { // create successfully -> next booking fragment
+            if( result == 1)// create successfully -> go to next booking fragment
+            {
                 Toast.makeText(context, context.getString(R.string.success), Toast.LENGTH_SHORT).show();
                 String fragmentTag = "bookingFragment3";
 
@@ -465,11 +472,27 @@ public class BookingFragment1 extends Fragment {
                 bundle.putString("bookingId", String.valueOf(response.getData().getId()));
 
 
+                BookingFragment3 nextFragment = new BookingFragment3();
+                nextFragment.setArguments(bundle);
+
+
+                requireActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.frameLayout, nextFragment, fragmentTag)
+                        .addToBackStack(fragmentTag)
+                        .commit();
+
+                HomePageActivity.getInstance().setNumberOnNotificationIcon();
+            }
+            else// create failed -> show error message
+            {
+                String message = response.getMsg();
+                dialog.show(R.string.attention, message, R.drawable.ic_info);
             }
         }
-        catch (Exception e) {
+        catch (Exception exception)
+        {
             System.out.println(TAG);
-            System.out.println(e);
+            System.out.println(exception);
             dialog.show(R.string.attention, context.getString(R.string.oops_there_is_an_issue), R.drawable.ic_info);
         }
     }
