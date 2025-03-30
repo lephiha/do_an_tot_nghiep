@@ -248,4 +248,9 @@
 <string name="time">Time</string>
 <string name="celsius" translatable="false">°C</string>
 <string name="humidity">Độ ẩm</string>
+    <string name="incoming">Incoming</string>
+    <string name="voice_call">Voice call</string>
+    <string name="video_call">Video Call</string>
+    <string name="voice_call_2">Voice call 2</string>
+    <string name="video_call_2">Video Call 2</string>
 </resources>
