@@ -206,7 +206,7 @@ public class HomeFragment extends Fragment {
         Setting setting5 = new Setting(R.drawable.ic_exam_eye, "eyeExamination", getString(R.string.eye_examination));
         Setting setting6 = new Setting(R.drawable.ic_exam_medical_test, "medicalTestExamination", getString(R.string.medical_test_examination));
         Setting setting7 = new Setting(R.drawable.ic_exam_covid19, "covid19", getString(R.string.covid19_examination));
-        Setting setting8 = new Setting(R.drawable.ic_medical_home, "chatAI", getString(R.string.chat_ai));
+        Setting setting8 = new Setting(R.drawable.ic_medical_home, "call_video", getString(R.string.call_video));
 
 
         List<Setting> list = new ArrayList<>();

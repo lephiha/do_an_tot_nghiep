@@ -44,6 +44,7 @@
 <string name="medical_test_examination">Kiểm tra y tế</string>
 <string name="tooth_examination">Khám răng</string>
 <string name="chat_ai">Medical at home</string>
+    <string name="call_video">Khám từ xa - Call video</string>
 <string name="eye_examination">Khám mắt</string>
 <string name="speciality_examination">Khám chuyên khoa</string>
 <string name="popular_specialities">Chuyên khoa phổ biến</string>
