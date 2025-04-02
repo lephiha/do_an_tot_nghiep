@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.lephiha.do_an.CallVideo.ChooseDoctorActivity;
 import com.lephiha.do_an.Model.Setting;
 import com.lephiha.do_an.R;
 import com.lephiha.do_an.SearchPage.SearchActivity;
@@ -76,7 +77,7 @@ public class ButtonRecyclerView extends RecyclerView.Adapter<ButtonRecyclerView.
 
                 case "pregnantExamination":
                     intent = new Intent(context, ServiceActivity.class);
-                    intent.putExtra("serviceId", "6" );
+                    intent.putExtra("serviceId", "7" );
                     context.startActivity(intent);
                     break;
 
@@ -101,6 +102,12 @@ public class ButtonRecyclerView extends RecyclerView.Adapter<ButtonRecyclerView.
                 case "covid19":
                     intent = new Intent(context, ServiceActivity.class);
                     intent.putExtra("serviceId", "22" );
+                    context.startActivity(intent);
+                    break;
+
+                case "call_video":
+                    intent = new Intent(context, ChooseDoctorActivity.class);
+                    intent.putExtra("serviceId", "23" );
                     context.startActivity(intent);
                     break;
             }

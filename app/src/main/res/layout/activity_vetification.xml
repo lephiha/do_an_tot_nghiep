@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground"
+    android:orientation="vertical"
+    android:padding="10dp"
+    tools:context=".LoginPage.VertificationActivity">
+
+    <ImageView
+        android:layout_width="171dp"
+        android:layout_height="142dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="80dp"
+        android:src="@drawable/logo" />
+    <!-- SLOGAN -->
+    <LinearLayout
+        android:paddingTop="10dp"
+        android:paddingBottom="20dp"
+        android:layout_marginTop="10dp"
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/leeha"
+            android:textColor="@color/colorTheme"
+            android:textSize="14sp"
+            android:textStyle="bold|italic" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="5dp"
+            android:text="@string/has_you_covered"
+            android:textColor="@color/colorTextBlack"
+            android:textSize="14sp"
+            tools:ignore="RtlSymmetry" />
+
+    </LinearLayout>
+    <TextView
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginTop="30dp"
+        android:textColor="@color/colorTextBlack"
+        android:textSize="12sp"
+        android:text="@string/enter_your_verification_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <EditText
+        android:id="@+id/txtVerificationCode"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_margin="20dp"
+        android:autofillHints=""
+        android:background="@drawable/input_style"
+        android:drawableStart="@drawable/ic_key"
+        android:drawablePadding="20dp"
+        android:hint="@string/verification_code"
+        android:inputType="numberDecimal"
+        android:paddingHorizontal="20dp"
+        android:gravity="center_vertical"
+        android:text="123456"
+        android:textSize="14sp"
+        tools:ignore="SmallSp" />
+
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="20dp"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnConfirm"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp"
+        android:textAllCaps="false"
+        android:textAlignment="center"
+        android:textSize="14sp"
+        android:textColor="@color/white"
+        android:text="@string/confirm"
+        style="@style/button_style_info" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="80dp"/>
+
+    <TextView
+        android:gravity="center"
+        android:textColor="@color/colorTextBlack"
+        android:textSize="11sp"
+        android:text="@string/do_not_receive_verification_code_try_again"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="10dp"/>
+
+    <!-- BUTTON Get Authorization Code-->
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnResend"
+
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp"
+        android:textAllCaps="false"
+        android:textAlignment="center"
+        android:textSize="14sp"
+        android:textColor="@color/white"
+        android:text="@string/resend_verification_code"
+        style="@style/button_style_danger" />
+
+
+</LinearLayout>
