@@ -64,7 +64,7 @@ public class InformationActivity extends AppCompatActivity {
     private RadioGroup rgGender;
     private TextView txtBirthday;
     private TextView txtAddress;
-    private TextView txtCreatAp;
+    private TextView txtCreateAt;
     private TextView txtUpdateAt;
 
     private AppCompatButton btnSave;
@@ -105,7 +105,7 @@ public class InformationActivity extends AppCompatActivity {
         txtAddress = findViewById(R.id.txtAddress);
         rgGender = findViewById(R.id.rgGender);
 
-        txtCreatAp = findViewById(R.id.txtCreateAt);
+        txtCreateAt = findViewById(R.id.txtCreateAt);
         txtUpdateAt = findViewById(R.id.txtUpdateAt);
 
         btnSave = findViewById(R.id.btnSave);
@@ -135,7 +135,7 @@ public class InformationActivity extends AppCompatActivity {
         String birthday = user.getBirthday();
         String address = user.getAddress();
 
-        String creatAt = Tooltip.beautifierDatetime(this, user.getCreateAt());
+        String createAt = Tooltip.beautifierDatetime(this, user.getCreateAt());
         String updateAt = Tooltip.beautifierDatetime(this, user.getUpdateAt());
 
 
@@ -157,7 +157,7 @@ public class InformationActivity extends AppCompatActivity {
 
         txtBirthday.setText(birthday);
         txtAddress.setText(address);
-        txtCreatAp.setText(creatAt);
+        txtCreateAt.setText(createAt);
         txtUpdateAt.setText(updateAt);
 
 
@@ -208,7 +208,7 @@ public class InformationActivity extends AppCompatActivity {
             String address = txtAddress.getText().toString();
 
             loadingScreen.start();
-            changePersonnalInfo(name, gender, birthday, address);
+            changePersonalInfo(name, gender, birthday, address);
         });
 
         //img avt
@@ -237,7 +237,7 @@ public class InformationActivity extends AppCompatActivity {
 
     }
 
-    private void changePersonnalInfo(String name, String gender, String birthday, String address) {
+    private void changePersonalInfo(String name, String gender, String birthday, String address) {
         //1
         Retrofit service = HTTPService.getInstance();
         HTTPRequest api = service.create(HTTPRequest.class);
@@ -292,79 +292,79 @@ public class InformationActivity extends AppCompatActivity {
         });
     }
 
-    private void uploadPhotoToServer(Uri uri) {
-        // 1-setup file path
+    private void uploadPhotoToServer(Uri uri)
+    {
+        /*Step 1 - set up file path*/
         String[] projection = { MediaStore.Images.Media.DATA };
-        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+        Cursor cursor = getContentResolver().query(uri,
+                projection, null, null, null);
 
-        if (cursor != null) {
-            int columnIndex = cursor.getColumnIndex(projection[0]);
-            if (cursor.moveToFirst()) {
-                String filePath = cursor.getString(columnIndex);
-                cursor.close();
+        int columnIndex = cursor.getColumnIndex(projection[0]);
+        cursor.moveToFirst();
+        String filePath = cursor.getString(columnIndex);
+        cursor.close();
 
-                if (filePath != null) {
-                    // 2- config new request
-                    Retrofit service = HTTPService.getInstance();
-                    HTTPRequest api = service.create(HTTPRequest.class);
 
-                    // 3
-                    RequestBody action = RequestBody.create(MediaType.parse("multipart/form-data"), "avatar");
+        /*Step 2 - configure new request*/
+        Retrofit service = HTTPService.getInstance();
+        HTTPRequest api = service.create(HTTPRequest.class);
 
-                    File file = new File(filePath);
-                    RequestBody requestBodyFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
 
-                    // multipartBody.part is used to send the file name
-                    MultipartBody.Part actualFile = MultipartBody.Part.createFormData("file", file.getName(), requestBodyFile);
+        /*Step 3*/
+        //String action = "avatar";// the key to distingue POST request: personal, avatar, password
+        RequestBody action = RequestBody.create(MediaType.parse("multipart/form-data"), "avatar");
 
-                    String accessToken = globaleVariable.getAccessToken();
-                    String type = "Patient";
-                    Call<PatientProfileChangeAvatar> container = api.changeAvatar(accessToken, type, actualFile, action);
 
-                    // 4
-                    container.enqueue(new Callback<PatientProfileChangeAvatar>() {
-                        @Override
-                        public void onResponse(@NonNull Call<PatientProfileChangeAvatar> call, @NonNull Response<PatientProfileChangeAvatar> response) {
-                            if (response.isSuccessful()) {
-                                PatientProfileChangeAvatar content = response.body();
-                                assert content != null;
+        File file = new File(Uri.parse(filePath).toString());
+        RequestBody requestBodyFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        // MultipartBody.Part is used to send also the actual file name
+        MultipartBody.Part actualFile = MultipartBody.Part.createFormData("file", file.getName(), requestBodyFile);
 
-                                // show successful message
-                                dialog.announce();
-                                dialog.btnOK.setOnClickListener(view -> dialog.close());
-                                dialog.show("Success", "The Operation was done successfully!", R.drawable.ic_check);
 
-                                // update user in app storage
-                                if (response.errorBody() != null) {
-                                    try {
-                                        JSONObject jObject = new JSONObject(response.errorBody().string());
-                                        System.out.println(jObject);
-                                    } catch (Exception e) {
-                                        System.out.println(e.getMessage());
-                                    }
-                                }
-                            }
-                        }
+        String accessToken = globaleVariable.getAccessToken();
+        String type = "Patient";
+        Call<PatientProfileChangeAvatar> container = api.changeAvatar(accessToken, type, actualFile, action);
 
-                        @Override
-                        public void onFailure(@NonNull Call<PatientProfileChangeAvatar> call, @NonNull Throwable t) {
-                            System.out.println(TAG);
-                            System.out.println("ERROR");
-                            t.printStackTrace();
-                        }
-                    });
-                } else {
-                    // Handle the case where filePath is null
-                    System.out.println("File path is null");
+        /*Step 4*/
+        container.enqueue(new Callback<PatientProfileChangeAvatar>() {
+            @Override
+            public void onResponse(@NonNull Call<PatientProfileChangeAvatar> call, @NonNull Response<PatientProfileChangeAvatar> response) {
+
+                if(response.isSuccessful())
+                {
+                    PatientProfileChangeAvatar content = response.body();
+                    assert content != null;
+
+                    /*Show successful message*/
+                    dialog.announce();
+                    dialog.btnOK.setOnClickListener(view->dialog.close());
+                    dialog.show(R.string.success, getString(R.string.successful_action), R.drawable.ic_check);
+
+
+                    /*Update AuthUser in Application storage*/
+                    User user = content.getData();
+                    globaleVariable.setAuthUser(user);
                 }
-            } else {
-                cursor.close();
-                System.out.println("Cursor moveToFirst() returned false");
+                if(response.errorBody() != null)
+                {
+                    try
+                    {
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        System.out.println( jObjError );
+                    }
+                    catch (Exception e) {
+                        System.out.println( e.getMessage() );
+                    }
+                }
             }
-        } else {
-            // Handle the case where cursor is null
-            System.out.println("Cursor is null");
-        }
+
+            @Override
+            public void onFailure(@NonNull Call<PatientProfileChangeAvatar> call, @NonNull Throwable t) {
+                System.out.println(TAG);
+                System.out.println("ERROR");
+                t.printStackTrace();
+            }
+        });
     }
 
     //check if app has permission to write to device storage

@@ -71,7 +71,7 @@ public interface HTTPRequest {
                                                                             @Field("birthday") String birthday,
                                                                             @Field("address") String address);
 
-    @FormUrlEncoded
+    @Multipart
     @POST("api/patient/profile")
     Call<PatientProfileChangeAvatar> changeAvatar(@Header("Authorization") String accessToken,
                                                   @Header("Type") String type,

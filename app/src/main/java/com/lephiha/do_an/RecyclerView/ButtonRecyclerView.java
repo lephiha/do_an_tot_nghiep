@@ -77,7 +77,7 @@ public class ButtonRecyclerView extends RecyclerView.Adapter<ButtonRecyclerView.
 
                 case "pregnantExamination":
                     intent = new Intent(context, ServiceActivity.class);
-                    intent.putExtra("serviceId", "7" );
+                    intent.putExtra("serviceId", "8" );
                     context.startActivity(intent);
                     break;
 
@@ -95,7 +95,7 @@ public class ButtonRecyclerView extends RecyclerView.Adapter<ButtonRecyclerView.
 
                 case "medicalTestExamination":
                     intent = new Intent(context, ServiceActivity.class);
-                    intent.putExtra("serviceId", "24" );
+                    intent.putExtra("serviceId", "17" );
                     context.startActivity(intent);
                     break;
 

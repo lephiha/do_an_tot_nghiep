@@ -13,6 +13,7 @@ import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +48,9 @@ import com.lephiha.do_an.configAPI.HTTPService;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -120,11 +124,11 @@ public class BookingFragment3 extends Fragment {
 
     private void setupEvent() {
         //btn upload
-        btnUpload.setOnClickListener(view -> {
+        btnUpload.setOnClickListener(view->{
             verifyStoragePermissions(activity);
 
             Intent intent = new Intent();
-            intent.setType("image/*"); // allows any img file type. change * to specific extension to limit it
+            intent.setType("image/*");//allows any image file type. Change * to specific extension to limit it
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false);
             intent.setAction(Intent.ACTION_GET_CONTENT);
             openGalleryToPickPhoto.launch(intent);
@@ -139,165 +143,6 @@ public class BookingFragment3 extends Fragment {
                     .replace(R.id.frameLayout, nextFragment, fragmentTag)
                     .addToBackStack(fragmentTag)
                     .commit();
-        });
-    }
-
-    // Storage Permissions
-    private static final int REQUEST_EXTERNAL_STORAGE = 1;
-    private static final String[] PERMISSIONS_STORAGE = {
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-    };
-    public static void verifyStoragePermissions(Activity activity) {
-        // Check if we have write permission
-        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        if (permission != PackageManager.PERMISSION_GRANTED) {
-            // We don't have permission so prompt the user
-            ActivityCompat.requestPermissions(
-                    activity,
-                    PERMISSIONS_STORAGE,
-                    REQUEST_EXTERNAL_STORAGE
-            );
-        }
-    }
-
-    //open gallerry to pick photo
-
-    private final ActivityResultLauncher<Intent> openGalleryToPickPhoto = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(), result -> {
-                if (result.getResultCode() == RESULT_OK) {
-                    Intent data = result.getData();
-                    assert data != null;
-                    Uri uri = data.getData();
-
-                    uploadPhotoToServer(uri);
-                }
-                else {
-                    System.out.println(TAG);
-                    System.out.println("Error - openGalleryToPickPhoto");
-                }
-            }
-    );
-
-    //create a http request to upload photo
-
-    private void uploadPhotoToServer(Uri uri) {
-        //1- setup file path
-        String[] projection = {MediaStore.Images.Media.DATA};
-        Cursor cursor = activity.getContentResolver().query(uri, projection,null, null, null);
-
-        int columnIndex = cursor.getColumnIndex(projection[0]);
-        cursor.moveToFirst();
-        String filePath = cursor.getString(columnIndex);
-        cursor.close();
-
-        //2. config new request
-        Retrofit service = HTTPService.getInstance();
-        HTTPRequest api = service.create(HTTPRequest.class);
-
-        //3
-        System.out.println("booking id: "+ bookingId);
-        RequestBody id = RequestBody.create(MediaType.parse("multipart/form-data"), bookingId);
-
-        File file = new File(Uri.parse(filePath).toString());
-        RequestBody requestBodyFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-
-        //multipartBody.part is used to send also the actual file name
-        MultipartBody.Part actualFile = MultipartBody.Part.createFormData("file", file.getName(), requestBodyFile);
-
-        String accessToken = globaleVariable.getAccessToken();
-        String type = "Patient";
-        Call<BookingPhotoUpload> container = api.bookingPhotoUpload(accessToken, type, id, actualFile);
-
-
-        //4
-        container.enqueue(new Callback<BookingPhotoUpload>() {
-            @SuppressLint("NotifyDataSetChanged")
-            @Override
-            public void onResponse(@NonNull Call<BookingPhotoUpload> call,@NonNull Response<BookingPhotoUpload> response) {
-                if (response.isSuccessful()) {
-                    BookingPhotoUpload content = response.body();
-                    assert content != null;
-                    int result = content.getResult();
-                    String msg = content.getMsg();
-
-                    if (result == 1) {
-                        viewModel.bookingPhotoReadAll(header, bookingId);
-                        adapter.notifyDataSetChanged();
-                    }
-                    else {
-                        dialog.announce();
-                        dialog.btnOK.setOnClickListener(view -> dialog.close());
-                        dialog.show(R.string.attention, msg, R.drawable.ic_info);
-                    }
-                }
-                if (response.errorBody() != null) {
-                    try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        System.out.println(jObjError);
-                    }
-                    catch (Exception e) {
-                        System.out.println(e.getMessage());
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<BookingPhotoUpload> call,@NonNull Throwable t) {
-                System.out.println(TAG);
-                System.out.println("Error");
-                t.printStackTrace();
-            }
-        });
-    }
-
-    //setup view model
-    private void setupViewModel() {
-        //declare
-        viewModel = new ViewModelProvider(this).get(BookingViewModel.class);
-        viewModel.instantiate();
-
-        //send request
-        viewModel.bookingPhotoReadAll(header, bookingId);
-        viewModel.getBookingPhotoReadAllResponse().observe((LifecycleOwner) context, response -> {
-            try {
-                int result = response.getResult();
-                // result = 1 => luu thong tin vao home
-                if (result == 1) {
-                    list = response.getData();
-                    System.out.println(TAG);
-                    System.out.println("photo size: "+ list.size());
-                    setupRecyclerView(list);
-                }
-                if (result == 0) {
-                    dialog.announce();
-                    dialog.show(R.string.attention, getString(R.string.check_your_internet_connection), R.drawable.ic_info);
-                    dialog.btnOK.setOnClickListener(view->{
-                        dialog.close();
-                        activity.finish();
-                    });
-                }
-            }
-            catch (Exception e) {
-                System.out.println(TAG);
-                System.out.println(e);
-
-                dialog.announce();
-                dialog.show(R.string.attention, getString(R.string.check_your_internet_connection), R.drawable.ic_info);
-                dialog.btnOK.setOnClickListener(view->{
-                    dialog.close();
-                    activity.finish();
-                });
-            }
-        });
-
-        //animation
-        viewModel.getAnimation().observe((LifecycleOwner) context, aBoolean -> {
-            if (aBoolean) loadingScreen.start();
-            else {
-                loadingScreen.stop();
-            }
         });
     }
 
@@ -390,4 +235,181 @@ public class BookingFragment3 extends Fragment {
             }
         });
     }
+
+    // Storage Permissions
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static final String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+    public static void verifyStoragePermissions(Activity activity) {
+        // Check if we have write permission
+        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+        }
+    }
+
+    //open gallerry to pick photo
+
+    private final ActivityResultLauncher<Intent> openGalleryToPickPhoto = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == RESULT_OK) {
+                    Intent data = result.getData();
+                    assert data != null;
+                    Uri uri = data.getData();
+
+                    uploadPhotoToServer(uri);
+                }
+                else {
+                    System.out.println(TAG);
+                    System.out.println("Error - openGalleryToPickPhoto");
+                }
+            }
+    );
+
+    //create a http request to upload photo
+
+    private void uploadPhotoToServer(Uri uri) {
+        if (uri == null) {
+            Log.e(TAG, "URI is null, cannot upload photo");
+            dialog.announce();
+            dialog.show(R.string.attention, "Không thể lấy ảnh từ thư viện.", R.drawable.ic_info);
+            dialog.btnOK.setOnClickListener(v -> dialog.close());
+            return; // Dừng hàm nếu URI null.
+        }
+
+        try {
+            InputStream inputStream = activity.getContentResolver().openInputStream(uri);
+            if (inputStream == null) {
+                Log.e(TAG, "InputStream is null, cannot upload photo");
+                dialog.announce();
+                dialog.show(R.string.attention, "Lỗi đọc file ảnh.", R.drawable.ic_info);
+                dialog.btnOK.setOnClickListener(v -> dialog.close());
+                return;
+            }
+
+            File tempFile = File.createTempFile("image", ".jpg", activity.getCacheDir());
+            FileOutputStream fileOutputStream = new FileOutputStream(tempFile);
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                fileOutputStream.write(buffer, 0, bytesRead);
+            }
+            inputStream.close();
+            fileOutputStream.close();
+
+            RequestBody id = RequestBody.create(MediaType.parse("multipart/form-data"), bookingId);
+            RequestBody requestBodyFile = RequestBody.create(MediaType.parse("multipart/form-data"), tempFile);
+            MultipartBody.Part actualFile = MultipartBody.Part.createFormData("file", tempFile.getName(), requestBodyFile);
+
+            String accessToken = globaleVariable.getAccessToken();
+            String type = "Patient";
+            Retrofit service = HTTPService.getInstance();
+            HTTPRequest api = service.create(HTTPRequest.class);
+            Call<BookingPhotoUpload> container = api.bookingPhotoUpload(accessToken, type, id, actualFile);
+
+            container.enqueue(new Callback<BookingPhotoUpload>() {
+                @SuppressLint("NotifyDataSetChanged")
+                @Override
+                public void onResponse(@NonNull Call<BookingPhotoUpload> call, @NonNull Response<BookingPhotoUpload> response) {
+                    if (response.isSuccessful()) {
+                        BookingPhotoUpload content = response.body();
+                        if (content != null && content.getResult() == 1) {
+                            viewModel.bookingPhotoReadAll(header, bookingId);
+                            adapter.notifyDataSetChanged();
+                        } else {
+                            dialog.announce();
+                            dialog.show(R.string.attention, content != null ? content.getMsg() : "Upload failed", R.drawable.ic_info);
+                            dialog.btnOK.setOnClickListener(view -> dialog.close());
+                        }
+                    } else {
+                        try {
+                            JSONObject jObjError = new JSONObject(response.errorBody().string());
+                            Log.e(TAG, "Error body: " + jObjError);
+                        } catch (Exception e) {
+                            Log.e(TAG, "Error parsing error body", e);
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<BookingPhotoUpload> call, @NonNull Throwable t) {
+                    Log.e(TAG, "Upload onFailure", t);
+                    dialog.announce();
+                    dialog.show(R.string.attention, "Lỗi kết nối mạng hoặc server.",R.drawable.ic_info);
+                    dialog.btnOK.setOnClickListener(v->dialog.close());
+                }
+            });
+        } catch (IOException e) {
+            Log.e(TAG, "IOException during file processing", e);
+            dialog.announce();
+            dialog.show(R.string.attention, "Lỗi xử lý file ảnh.", R.drawable.ic_info);
+            dialog.btnOK.setOnClickListener(v->dialog.close());
+
+        } catch (Exception e){
+            Log.e(TAG, "Exception during upload", e);
+            dialog.announce();
+            dialog.show(R.string.attention, "Lỗi upload ảnh.", R.drawable.ic_info);
+            dialog.btnOK.setOnClickListener(v->dialog.close());
+
+        }
+    }
+
+    //setup view model
+    private void setupViewModel() {
+        //declare
+        viewModel = new ViewModelProvider(this).get(BookingViewModel.class);
+        viewModel.instantiate();
+
+        //send request
+        viewModel.bookingPhotoReadAll(header, bookingId);
+        viewModel.getBookingPhotoReadAllResponse().observe((LifecycleOwner) context, response -> {
+            try {
+                int result = response.getResult();
+                // result = 1 => luu thong tin vao home
+                if (result == 1) {
+                    list = response.getData();
+                    System.out.println(TAG);
+                    System.out.println("photo size: "+ list.size());
+                    setupRecyclerView(list);
+                }
+                if (result == 0) {
+                    dialog.announce();
+                    dialog.show(R.string.attention, getString(R.string.check_your_internet_connection), R.drawable.ic_info);
+                    dialog.btnOK.setOnClickListener(view->{
+                        dialog.close();
+                        activity.finish();
+                    });
+                }
+            }
+            catch (Exception e) {
+                System.out.println(TAG);
+                System.out.println(e);
+
+                dialog.announce();
+                dialog.show(R.string.attention, getString(R.string.check_your_internet_connection), R.drawable.ic_info);
+                dialog.btnOK.setOnClickListener(view->{
+                    dialog.close();
+                    activity.finish();
+                });
+            }
+        });
+
+        //animation
+        viewModel.getAnimation().observe((LifecycleOwner) context, aBoolean -> {
+            if (aBoolean) loadingScreen.start();
+            else {
+                loadingScreen.stop();
+            }
+        });
+    }
+
+
 }

@@ -16,7 +16,7 @@
         <de.hdodenhof.circleimageview.CircleImageView
             android:layout_marginVertical="20dp"
             android:id="@+id/imgAvatar"
-            android:src="@drawable/default_avatar"
+            android:src="@drawable/img"
             android:layout_gravity="center"
             android:layout_width="80dp"
             android:layout_height="80dp"/>

@@ -32,10 +32,10 @@
 <string name="login_failed">Đăng nhập thất bại</string>
 <string name="login_with_google_successfully">Đăng nhập bằng google thành công</string>
 <string name="check_your_internet_connection">Kiểm tra kết nối internet của bạn</string>
-<string name="home">Home</string>
-<string name="notification">Notification</string>
-<string name="personality">Personality</string>
-<string name="appointment">Appointment</string>
+<string name="home">Trang chủ</string>
+<string name="notification">Thông báo</string>
+<string name="personality">Cá nhân</string>
+<string name="appointment">Lịch khám bệnh</string>
 <string name="are_you_sure_about_that">Bạn có chắc chắn về điều đó không?</string>
 <!-- TODO: Remove or change this placeholder text -->
 <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -81,9 +81,9 @@
 <string name="create_booking">Đặt lịch khám</string>
 <string name="booking">Đặt lịch khám</string>
 <string name="default_service_name">Xét nghiệm máu</string>
-<string name="free_booking_fee">phí đặt khám</string>
-<string name="bookingName">Booking personal name (Bắt buộc)</string>
-<string name="bookingName2">Booking personal name</string>
+<string name="free_booking_fee">Miễn phí đặt khám</string>
+<string name="bookingName">Họ tên người đặt lịch (Bắt buộc)</string>
+<string name="bookingName2">Họ tên người đặt lịch</string>
 <string name="bookingPhone">Số điện thoại đặt khám (Bắt buộc)</string>
 <string name="bookingPhone2">Số điện thoại đặt khám </string>
 <string name="patientName">Tên bệnh nhân (Bắt buộc)</string>
@@ -187,7 +187,7 @@
 <string name="instruction">Chỉ dẫn</string>
 <string name="type">Type</string>
 <string name="language">Ngôn Ngữ</string>
-<string name="appearance">Appearance</string>
+<string name="appearance">Giao diện</string>
 <string name="appointment_history">Lịch sử cuộc hẹn</string>
 <string name="personal_information">Thông tin cá nhân</string>
 <string name="exit">Thoát</string>
