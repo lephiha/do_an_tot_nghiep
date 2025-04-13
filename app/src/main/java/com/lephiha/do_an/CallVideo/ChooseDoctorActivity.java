@@ -34,7 +34,7 @@ import retrofit2.Response;
 
 public class ChooseDoctorActivity extends AppCompatActivity implements ChooseCallDoctorListener{
 
-    RecyclerView recyclerView;
+        RecyclerView recyclerView;
     List<CallDoctor> doctorList;
     TextView navText;
     ImageView back;
@@ -45,29 +45,46 @@ public class ChooseDoctorActivity extends AppCompatActivity implements ChooseCal
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_choose_call_doctor);
+
         recyclerView = findViewById(R.id.doctorRecyclerview);
         navText = findViewById(R.id.navText);
         back = findViewById(R.id.back);
         back.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
         navText.setText("Tư vấn khám bệnh qua video");
-        SharedPreferences sp = getSharedPreferences("UserData", MODE_PRIVATE);
-        int id = sp.getInt("id",0);
+
+        // ⚠️ Hardcode ID để test nhanh
+        int id = 1; // <-- Thay bằng ID hợp lệ đang có trên database
+        android.util.Log.d("DEBUG_CALL", "ID user gửi API: " + id);
+
         Constant.getService().getCallDoctor(id).enqueue(new Callback<List<CallDoctor>>() {
             @Override
             public void onResponse(Call<List<CallDoctor>> call, Response<List<CallDoctor>> response) {
-                doctorList = response.body();
-                CallDoctorAdapter adapter = new CallDoctorAdapter(ChooseDoctorActivity.this, doctorList, ChooseDoctorActivity.this);
-                recyclerView.setAdapter(adapter);
-                recyclerView.setLayoutManager(new LinearLayoutManager(ChooseDoctorActivity.this));
-                adapter.notifyDataSetChanged();
+                if (response.isSuccessful() && response.body() != null) {
+                    doctorList = response.body();
+                    android.util.Log.d("DEBUG_CALL", "Số bác sĩ nhận được: " + doctorList.size());
+
+                    if (!doctorList.isEmpty()) {
+                        CallDoctorAdapter adapter = new CallDoctorAdapter(ChooseDoctorActivity.this, doctorList, ChooseDoctorActivity.this);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(ChooseDoctorActivity.this));
+                        recyclerView.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
+                    } else {
+                        android.util.Log.w("DEBUG_CALL", "Danh sách bác sĩ rỗng.");
+                    }
+
+                } else {
+                    android.util.Log.e("DEBUG_CALL", "Lỗi phản hồi: " + response.code() + " - " + response.message());
+                }
             }
 
             @Override
-            public void onFailure(Call<List<CallDoctor>> call, Throwable throwable) {
-
+            public void onFailure(Call<List<CallDoctor>> call, Throwable t) {
+                android.util.Log.e("DEBUG_CALL", "Lỗi gọi API: " + t.getMessage(), t);
             }
         });
     }
+
+
 
     @Override
     public void onItemCliked(CallDoctor callDoctor) {

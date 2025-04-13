@@ -22,18 +22,20 @@ public class CallDoctor implements Serializable {
     @SerializedName("description")
     @Expose
     private String description;
+    @SerializedName("role")
+    @Expose
+    private String role;
+
     @SerializedName("price")
     @Expose
     private String price;
-    @SerializedName("role")
-    @Expose
-    private Integer role;
+
     @SerializedName("avatar")
     @Expose
     private String avatar;
-    @SerializedName("speciality_id")
+    @SerializedName("speciality_name")
     @Expose
-    private String specialityId;
+    private String specialityName;
 
     public Integer getId() {
         return id;
@@ -83,11 +85,11 @@ public class CallDoctor implements Serializable {
         this.price = price;
     }
 
-    public Integer getRole() {
+    public String getRole() {
         return role;
     }
 
-    public void setRole(Integer role) {
+    public void setRole(String role) {
         this.role = role;
     }
 
@@ -99,11 +101,11 @@ public class CallDoctor implements Serializable {
         this.avatar = avatar;
     }
 
-    public String getSpecialityId() {
-        return specialityId;
+    public String getSpecialityName() {
+        return specialityName;
     }
 
-    public void setSpecialityId(String specialityId) {
-        this.specialityId = specialityId;
+    public void getSpecialityName(String specialityName) {
+        this.specialityName = specialityName;
     }
 }

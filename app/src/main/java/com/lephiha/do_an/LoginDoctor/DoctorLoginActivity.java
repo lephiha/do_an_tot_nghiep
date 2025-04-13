@@ -176,7 +176,7 @@ public class DoctorLoginActivity extends AppCompatActivity {
                                 Intent intent = new Intent(DoctorLoginActivity.this, HomePageActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK); // Xóa các activity trước đó
                                 startActivity(intent);
-                                finish(); // Đóng màn hình login
+                                finish(); 
 
                             } else {
                                 // Đăng nhập thất bại (result == 0)

@@ -10,6 +10,6 @@ import retrofit2.http.Query;
 
 public interface ApiService {
 
-    @GET("api/doctors")
+    @GET("api/app/video_call/getcalldoctor.php")
     Call<List<CallDoctor>> getCallDoctor(@Query("pid") int pid);
 }
