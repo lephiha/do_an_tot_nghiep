@@ -253,4 +253,7 @@
     <string name="video_call">Video Call</string>
     <string name="voice_call_2">Voice call 2</string>
     <string name="video_call_2">Video Call 2</string>
+    <string name="appointment_doc">Gửi chuẩn đoán</string>
+    <string name="address">Bệnh viện Trung ương Quân đội 108,
+        <b>01 Trần Hưng Đạo, Phường Bạch Đằng, Quận Hai Bà Trưng, ​​Thành phố Hà Nội</b></string>
 </resources>

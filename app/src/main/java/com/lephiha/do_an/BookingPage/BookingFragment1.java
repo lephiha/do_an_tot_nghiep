@@ -137,10 +137,10 @@ public class BookingFragment1 extends Fragment {
 
         //setup form
         txtBookingPhone.setText(user.getPhone());
-        txtPatientBirthday.setText(user.getAddress());
+        txtPatientBirthday.setText(user.getBirthday());
         txtPatientAddress.setText(user.getAddress());
         txtAppointmentDate.setText(Tooltip.getToday());
-        txtAppointmentTime.setText("9:00");
+        txtAppointmentTime.setText(R.string.default_appointment_time);
     }
 
     //setup View model
@@ -247,10 +247,10 @@ public class BookingFragment1 extends Fragment {
 
     //print doc in4
     private void printDoctorIn4(Doctor doctor) {
-        String name = getString(R.string.create_booking)+ " " + getString(R.string.with)
-                +" "+ getString(R.string.doctor)
-                +" "+ doctor.getName();
-
+        String name = getString(R.string.create_booking)
+                + " " + getString(R.string.with)
+                + " " + getString(R.string.doctor)
+                + " " + doctor.getName();// for instance: Đặt lịch khám với bác sĩ Hà
         String image = Constant.UPLOAD_URI() + doctor.getAvatar();
 
         txtServiceName.setText(name);
@@ -276,15 +276,17 @@ public class BookingFragment1 extends Fragment {
             calendar.set(Calendar.DAY_OF_MONTH, day1);
 
             String dayFormatted = String.valueOf(day1);
-            String monthFormatted = String.valueOf(month1+1); //+ 1 unit because 0 <= month <=11
+            String monthFormatted = String.valueOf(month1+1);// add 1 unit because 0 <= month <=11
 
-            if (day1 < 10) {
+            if( day1 < 10)
+            {
                 dayFormatted = "0" + day1;
             }
-            if (month1 < 10) {
+            if( month1 < 10 )
+            {
                 monthFormatted = "0" + month1;
             }
-            String output = year1 + "-" + monthFormatted +"-"+dayFormatted;
+            String output = year1 + "-" + monthFormatted + "-" + dayFormatted;
             txtPatientBirthday.setText(output);
         };
 

@@ -29,8 +29,8 @@ public class RecordViewModel extends ViewModel {
     public MutableLiveData<RecordReadByID> getReadByIDResponse() {
         return readByIDResponse;
     }
-
-    public void readByID(Map<String, String> header, String appointmentId) {
+    public void readByID(Map<String, String> header, String appointmentId)
+    {
         animation = repository.getAnimation();
         readByIDResponse = repository.readByID(header, appointmentId);
     }

@@ -2,7 +2,10 @@ package com.lephiha.do_an.HomePage;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,6 +24,8 @@ import com.lephiha.do_an.LoginPage.LoginActivity;
 import com.lephiha.do_an.NotificationPage.NotificationFragment;
 import com.lephiha.do_an.R;
 import com.lephiha.do_an.SettingPage.SettingsFragment;
+import com.lephiha.do_an.chatbotAI.ChatActivity;
+import com.lephiha.do_an.chatbotAI.ChatHeadService;
 import com.lephiha.do_an.configAPI.HTTPRequest;
 import com.lephiha.do_an.configAPI.HTTPService;
 
@@ -44,8 +49,9 @@ public class HomePageActivity extends AppCompatActivity {
     private String fragmentTag;
 
     private SharedPreferences sharedPreferences;
+    private static final int REQUEST_CODE_OVERLAY_PERMISSION = 1001;
 
-    //weak activity + setter
+    // weak activity + setter
     public static WeakReference<HomePageActivity> weakActivity;
     public static HomePageActivity getInstance() {
         return weakActivity.get();
@@ -57,23 +63,73 @@ public class HomePageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_homepage);
         weakActivity = new WeakReference<>(HomePageActivity.this);
 
-        //enable homefragment by default
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:" + getPackageName()));
+            startActivityForResult(intent, REQUEST_CODE_OVERLAY_PERMISSION);
+        } else {
+            startChatHeadService();
+        }
+
+        // enable homefragment by default
         fragment = new HomeFragment();
         fragmentTag = "homeFragment";
         enableFragment(fragment, fragmentTag);
+        sendBroadcast(new Intent(ChatHeadService.ACTION_HOME_FRAGMENT_SHOWN)); // Hiện bong bóng khi khởi tạo
 
-        //run necessary function
         setupVariable();
         setupEvent();
         setNumberOnNotificationIcon();
     }
 
-    //whenever this activity opens, update the number of unread notification
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_OVERLAY_PERMISSION) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.canDrawOverlays(this)) {
+                startChatHeadService();
+            } else {
+                dialog.announce();
+                dialog.show(R.string.attention, "Bạn cần cấp quyền hiển thị trên các ứng dụng khác để sử dụng bong bóng chat.", R.drawable.ic_info);
+                dialog.btnOK.setOnClickListener(view -> dialog.close());
+            }
+        }
+    }
+
+    private void startChatHeadService() {
+        Intent intent = new Intent(this, ChatHeadService.class);
+        startService(intent);
+    }
+
+    private void stopChatHeadService() {
+        Intent intent = new Intent(this, ChatHeadService.class);
+        stopService(intent);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         setNumberOnNotificationIcon();
         Tooltip.setLocale(this, sharedPreferences);
+        // Kiểm tra fragment hiện tại khi resume
+        if ("homeFragment".equals(fragmentTag)) {
+            sendBroadcast(new Intent(ChatHeadService.ACTION_HOME_FRAGMENT_SHOWN));
+        } else {
+            sendBroadcast(new Intent(ChatHeadService.ACTION_HOME_FRAGMENT_HIDDEN));
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Ẩn bong bóng khi activity không còn ở foreground
+        sendBroadcast(new Intent(ChatHeadService.ACTION_HOME_FRAGMENT_HIDDEN));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopChatHeadService(); // Dừng service khi activity bị hủy
     }
 
     private void setupVariable() {
@@ -86,113 +142,94 @@ public class HomePageActivity extends AppCompatActivity {
     }
 
     private void setupEvent() {
-        //click item in bottom nav view
-
         bottomNavigationView.setOnItemReselectedListener(item -> {
-            //click bat ky button thi update unread notif
-
             int shortcut = item.getItemId();
 
             if (shortcut == R.id.shortcutHome) {
-                // setNumberOnNotif
                 fragment = new HomeFragment();
                 fragmentTag = "homeFragment";
+                sendBroadcast(new Intent(ChatHeadService.ACTION_HOME_FRAGMENT_SHOWN));
             } else if (shortcut == R.id.shortcutNotification) {
                 setNumberOnNotificationIcon();
                 fragment = new NotificationFragment();
                 fragmentTag = "notificationFragment";
+                sendBroadcast(new Intent(ChatHeadService.ACTION_HOME_FRAGMENT_HIDDEN));
             } else if (shortcut == R.id.shortcutAppointment) {
                 fragment = new AppointmentFragment();
                 fragmentTag = "appointmentFragment";
+                sendBroadcast(new Intent(ChatHeadService.ACTION_HOME_FRAGMENT_HIDDEN));
+            } else if (shortcut == R.id.shortcutChatAi) {
+                Intent intent = new Intent(HomePageActivity.this, ChatActivity.class);
+                startActivity(intent);
+                return;
             } else if (shortcut == R.id.shortcutPersonality) {
                 fragment = new SettingsFragment();
                 fragmentTag = "settingsFragment";
+                sendBroadcast(new Intent(ChatHeadService.ACTION_HOME_FRAGMENT_HIDDEN));
             }
 
             enableFragment(fragment, fragmentTag);
-
         });
     }
 
-    //activate a fragmment right away
-
     public void enableFragment(Fragment fragment, String fragmentTag) {
-        //1- update lai fragmentTag de obBackpress
         this.fragmentTag = fragmentTag;
 
-        //2
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
 
-        //3
         Map<String, String> headers = ((GlobaleVariable)getApplication()).getHeaders();
         String accessToken = headers.get("Authorization");
         String contentType = headers.get("Content-Type");
 
-        //4
         Bundle bundle = new Bundle();
         bundle.putString("accessToken", accessToken);
         bundle.putString("contentType", contentType);
         fragment.setArguments(bundle);
 
-        //5
         transaction.replace(R.id.frameLayout, fragment, fragmentTag);
         transaction.commit();
-
     }
 
-    //nut quay lai
     @Override
     public void onBackPressed() {
         dialog.confirm();
         dialog.show(getString(R.string.attention),
                 getString(R.string.are_you_sure_about_that), R.drawable.ic_info);
-        dialog.btnOK.setOnClickListener(view->{
+        dialog.btnOK.setOnClickListener(view -> {
             super.onBackPressed();
             finish();
         });
-        dialog.btnCancel.setOnClickListener(view-> dialog.close());
+        dialog.btnCancel.setOnClickListener(view -> dialog.close());
     }
 
-    //set nut notif icon
     public void setNumberOnNotificationIcon() {
-        //1- set Retrofit
         Retrofit service = HTTPService.getInstance();
         HTTPRequest api = service.create(HTTPRequest.class);
 
-        //2- prepare header
-        Map<String, String > header = globaleVariable.getHeaders();
+        Map<String, String> header = globaleVariable.getHeaders();
 
-        //3
         Call<NotificationReadAll> container = api.notificationReadAll(header);
 
-        //4
         container.enqueue(new Callback<NotificationReadAll>() {
             @Override
             public void onResponse(@NonNull Call<NotificationReadAll> call, @NonNull Response<NotificationReadAll> response) {
-                //neu thanh con thi update number unread notif
                 if (response.isSuccessful()) {
                     NotificationReadAll content = response.body();
                     assert content != null;
 
-                    //update unread notif
                     int quantityUnread = content.getQuantityUnread();
                     bottomNavigationView
                             .getOrCreateBadge(R.id.shortcutNotification)
                             .setNumber(quantityUnread);
                 }
-                //neu fail thi show exception
-                if(response.errorBody() != null)
-                {
-                    System.out.println(response);
-                    try
-                    {
+                if (response.errorBody() != null) {
+                    try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        System.out.println( jObjError );
-                    }
-                    catch (Exception e) {
+                        System.out.println(jObjError);
+                    } catch (Exception e) {
                         System.out.println(TAG);
-                        System.out.println("Exception: " + e.getMessage() );
+                        System.out.println("Exception: " + e.getMessage());
                     }
                 }
             }
@@ -201,28 +238,20 @@ public class HomePageActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call<NotificationReadAll> call, @NonNull Throwable t) {
                 System.out.println(TAG);
                 System.out.println("setNumberOnNotificationIcon - error: " + t.getMessage());
-
             }
         });
     }
 
-    /**
-     * exit app
-     * call o setting RecyclerView dong 64
-     */
-
-    public void exit()
-    {
+    public void exit() {
         SharedPreferences sharedPreferences = this.getApplication()
                 .getSharedPreferences(globaleVariable.getSharedReferenceKey(), MODE_PRIVATE);
 
         sharedPreferences.edit().putString("accessToken", null).apply();
-        sharedPreferences.edit().putInt("darkMode", 1).apply();// 1 is off, 2 is on
+        sharedPreferences.edit().putInt("darkMode", 1).apply();
         sharedPreferences.edit().putString("language", getString(R.string.vietnamese)).apply();
 
-
         System.out.println(TAG);
-        System.out.println("access token: " + sharedPreferences.getString("accessToken", null) );
+        System.out.println("access token: " + sharedPreferences.getString("accessToken", null));
 
         Intent intent = new Intent(this, LoginActivity.class);
         finish();

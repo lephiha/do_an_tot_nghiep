@@ -37,6 +37,16 @@ public class CallDoctor implements Serializable {
     @Expose
     private String specialityName;
 
+    @SerializedName("paid")
+    @Expose
+    private int paid;
+
+    @SerializedName("call_id")
+    @Expose
+    private String callId;
+
+    // Getter and Setter methods
+
     public Integer getId() {
         return id;
     }
@@ -105,7 +115,20 @@ public class CallDoctor implements Serializable {
         return specialityName;
     }
 
-    public void getSpecialityName(String specialityName) {
+    public void setSpecialityName(String specialityName) {
         this.specialityName = specialityName;
+    }
+
+    public int getPaid() {
+        return paid;
+    }
+
+
+    public String getCallId() {
+        return callId;
+    }
+
+    public void setCallId(String callId) {
+        this.callId = callId;
     }
 }

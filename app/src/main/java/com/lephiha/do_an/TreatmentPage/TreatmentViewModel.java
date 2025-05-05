@@ -11,7 +11,7 @@ import com.lephiha.do_an.Repository.TreatmentRepository;
 
 import java.util.Map;
 
-public class TreatmentViewModel extends ViewModel {
+public class    TreatmentViewModel extends ViewModel {
 
     private AppointmentRepository appointmentRepository;
 

@@ -1,7 +1,9 @@
 package com.lephiha.do_an.CallVideo;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -12,6 +14,8 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -88,7 +92,7 @@ public class ChooseDoctorActivity extends AppCompatActivity implements ChooseCal
 
     @Override
     public void onItemCliked(CallDoctor callDoctor) {
-        Intent intent = new Intent(ChooseDoctorActivity.this, IncomingCallActivity.class);
+        Intent intent = new Intent(ChooseDoctorActivity.this, ConfirmActivity.class);
         intent.putExtra("callDoctor", callDoctor);
         startActivity(intent);
     }
@@ -107,11 +111,27 @@ public class ChooseDoctorActivity extends AppCompatActivity implements ChooseCal
 //        startActivity(intent);
     }
 
+//    private void requestPermission() {
+//        if (!PermissionsUtils.getInstance().checkSelfPermission(this)) {
+//            PermissionsUtils.getInstance().requestPermissions(this);
+//        }
+//    }
+private static final int PERMISSION_REQUEST_CODE = 123;
+
     private void requestPermission() {
-        if (!PermissionsUtils.getInstance().checkSelfPermission(this)) {
-            PermissionsUtils.getInstance().requestPermissions(this);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+
+            // Yêu cầu quyền
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO},
+                    PERMISSION_REQUEST_CODE);
+        } else {
+            // Quyền đã được cấp, thực hiện cuộc gọi video
+            makeCall(true, true, "callId");
         }
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

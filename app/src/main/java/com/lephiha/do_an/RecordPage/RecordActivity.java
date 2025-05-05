@@ -94,15 +94,16 @@ public class RecordActivity extends AppCompatActivity {
 
         //send request
         viewModel.readByID(header, appointmentId);
-        viewModel.getReadByIDResponse().observe(this, response -> {
+        viewModel.getReadByIDResponse().observe(this, response->{
             try {
                 int result = response.getResult();
-                if (result == 1) { //luu user vaof homepage
+                /*result == 1 => luu thong tin nguoi dung va vao homepage*/
+                if (result == 1) {
                     Record record = response.getData();
                     printRecordIn4(record);
-
                 }
-                if (result == 0) { //thong bao va thoat ung dung
+                /*result == 0 => thong bao va thoat ung dung*/
+                if (result == 0) {
                     System.out.println(TAG);
                     System.out.println("READ ALL");
                     System.out.println("shut down by result == 0");
@@ -113,12 +114,12 @@ public class RecordActivity extends AppCompatActivity {
                         finish();
                     });
                 }
-            }
-            catch (Exception e) {
+
+            } catch (Exception ex) {
                 System.out.println(TAG);
                 System.out.println("READ ALL");
                 System.out.println("shut down by exception");
-                System.out.println(e);
+                System.out.println(ex);
                 /*Neu truy van lau qua ma khong nhan duoc phan hoi thi cung dong ung dung*/
                 dialog.announce();
                 dialog.show(R.string.attention, getString(R.string.check_your_internet_connection), R.drawable.ic_info);
@@ -143,12 +144,12 @@ public class RecordActivity extends AppCompatActivity {
     private void printRecordIn4(Record record) {
         //doctor in4
 
-        if (record.getDoctor().getAvatar().length() >0) {
+        if( record.getDoctor().getAvatar().length() > 0)
+        {
             String avatar = Constant.UPLOAD_URI() + record.getDoctor().getAvatar();
             Picasso.get().load(avatar).into(imgDoctorAvatar);
         }
-
-        String doctorName =getString(R.string.doctor) + " " +record.getDoctor().getName();
+        String doctorName = getString(R.string.doctor) + " " + record.getDoctor().getName();
         txtDoctorName.setText(doctorName);
 
         String datetime = Tooltip.beautifierDatetime(this, record.getCreateAt());

@@ -42,8 +42,6 @@ public class Tooltip {
         return yearValue + "-" + monthValue + "-" + dateValue;
     }
 
-    //lay ra ngay/thang/nam theo cach viet tieng viet
-
     public static String getReadableToday(Context context) {
         TimeZone timeZone = TimeZone.getTimeZone("Asia/Ho_Chi_Minh");
         Calendar calendar = Calendar.getInstance(timeZone);
@@ -53,41 +51,10 @@ public class Tooltip {
         int month = calendar.get(Calendar.MONTH) + 1;
         int year = calendar.get(Calendar.YEAR);
 
-        //dich ra tieng viet
-        String dayValue = context.getString(R.string.monday);
-        String monday = context.getString(R.string.monday);
-        String tuesday = context.getString(R.string.tuesday);
-        String wednesday = context.getString(R.string.wednesday);
-        String thursday = context.getString(R.string.thursday);
-        String friday = context.getString(R.string.friday);
-        String saturday = context.getString(R.string.saturday);
-        String sunday = context.getString(R.string.sunday);
+        // Lấy ngày tuần theo ngôn ngữ hiện tại
+        String dayValue = getDayOfWeek(context, day);
 
-        switch (day) {
-            case 2:
-                dayValue = monday;
-                break;
-            case 3:
-                dayValue = tuesday;
-                break;
-            case 4:
-                dayValue = wednesday;
-                break;
-            case 5:
-                dayValue = thursday;
-                break;
-            case 6:
-                dayValue = friday;
-                break;
-            case 7:
-                dayValue = saturday;
-                break;
-            case 1:
-                dayValue = sunday;
-                break;
-        }
-
-        //them so 0 vao truoc ngay va thang < 10
+        // Thêm số 0 vào trước ngày và tháng < 10
         String dateValue = String.valueOf(date);
         if (date < 10) {
             dateValue = "0" + dateValue;
@@ -99,10 +66,30 @@ public class Tooltip {
         String yearValue = String.valueOf(year);
 
         return dayValue + ", " + dateValue + "/" + monthValue + "/" + yearValue;
-
     }
 
-    @SuppressLint("SimpeDateFormat")
+    private static String getDayOfWeek(Context context, int day) {
+        switch (day) {
+            case 1:
+                return context.getString(R.string.sunday);
+            case 2:
+                return context.getString(R.string.monday);
+            case 3:
+                return context.getString(R.string.tuesday);
+            case 4:
+                return context.getString(R.string.wednesday);
+            case 5:
+                return context.getString(R.string.thursday);
+            case 6:
+                return context.getString(R.string.friday);
+            case 7:
+                return context.getString(R.string.saturday);
+            default:
+                return context.getString(R.string.monday); // Giá trị mặc định
+        }
+    }
+
+    @SuppressLint("SimpleDateFormat")
     public static String beautifierDatetime(Context context, String input) {
         if (input.length() != 19) {
             return "Tooltip - beautifierDatetime - error: value is not valid " + input.length();
@@ -128,36 +115,31 @@ public class Tooltip {
         return output;
     }
 
-    //get diff between two dates
-
-    public static long getDataDifference (Date date1, Date date2, TimeUnit timeUnit) {
+    public static long getDataDifference(Date date1, Date date2, TimeUnit timeUnit) {
         long diffInMillies = date2.getTime() - date1.getTime();
         return timeUnit.convert(diffInMillies, TimeUnit.MILLISECONDS);
     }
 
-    //set app language
-
-    public static void setLocale (Context context, SharedPreferences sharedPreferences) {
-        //từ bo nhớ ROM của thiết bị lây ra ngôn ngữ đã cài  đặt cho app
+    public static void setLocale(Context context, SharedPreferences sharedPreferences) {
+        // Lấy ngôn ngữ từ SharedPreferences
         String language = sharedPreferences.getString("language", context.getString(R.string.vietnamese));
 
-        String vietnamese = context.getString(R.string.vietnamese);
-        String deutsch = context.getString(R.string.deutsch);
-
-        Locale myLocale = new Locale("en");
-        if (Objects.equals(language, vietnamese)) {
+        // Xác định Locale dựa trên ngôn ngữ
+        Locale myLocale;
+        if (Objects.equals(language, context.getString(R.string.vietnamese))) {
             myLocale = new Locale("vi");
-        } else if (Objects.equals(language, deutsch)) {
+        } else if (Objects.equals(language, context.getString(R.string.deutsch))) {
             myLocale = new Locale("de");
+        } else {
+            myLocale = new Locale("en"); // Mặc định là tiếng Anh
         }
 
+        // Cập nhật Locale
+        Locale.setDefault(myLocale);
         Resources resources = context.getResources();
         DisplayMetrics displayMetrics = resources.getDisplayMetrics();
-
         Configuration configuration = resources.getConfiguration();
         configuration.setLocale(myLocale);
-
-        Locale.setDefault(myLocale);
         resources.updateConfiguration(configuration, displayMetrics);
     }
 }

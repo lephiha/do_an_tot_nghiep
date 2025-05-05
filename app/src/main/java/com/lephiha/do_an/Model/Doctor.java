@@ -57,6 +57,14 @@ public class Doctor {
     @Expose
     private Room room;
 
+    @SerializedName("token")
+    @Expose
+    private String token;
+
+    public String getToken() {
+        return token;
+    }
+
     public int getId() {
         return id;
     }

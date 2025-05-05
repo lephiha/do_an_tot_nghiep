@@ -3,7 +3,7 @@ package com.lephiha.do_an.Model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class User {
+public class Patient {
 
     @SerializedName("id")
     @Expose
@@ -54,6 +54,14 @@ public class User {
     }
     public void setToken(String token) {
         this.token = token;
+    }
+    // Getters and Setters
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getEmail() {
@@ -106,14 +114,6 @@ public class User {
 
     public String getAvatar() {
         return avatar;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public void setAvatar(String avatar) {

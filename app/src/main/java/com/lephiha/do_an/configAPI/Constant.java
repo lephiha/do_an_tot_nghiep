@@ -9,18 +9,22 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class  Constant {
 
+//    public static String UPLOAD_URI() {
+//        return "http://192.168.56.1:8080/Do_an_tot_nghiep_lph/api/assets/uploads/";
+//    }
+
     public static String UPLOAD_URI() {
-        return "http://192.168.56.1:8080/Do_an_tot_nghiep_lph/api/assets/uploads/";
+        return "https://profound-platypus-exactly.ngrok-free.app/Do_an_tot_nghiep_lph/api/assets/uploads/";
     }
 
-    public static String APP_PATH()
-    {
-        return "http://192.168.56.1:8080/Do_an_tot_nghiep_lph/";
-    }
 //    public static String APP_PATH()
 //    {
-//        return "https://ee32-42-117-48-191.ngrok-free.app/Do_an_tot_nghiep_lph/";
+//        return "http://192.168.56.1:8080/Do_an_tot_nghiep_lph/";
 //    }
+    public static String APP_PATH()
+    {
+        return "https://profound-platypus-exactly.ngrok-free.app/Do_an_tot_nghiep_lph/";
+    }
 
     public static String APP_PATH_EMULATOR()
     {
@@ -66,21 +70,23 @@ public class  Constant {
         return "https://api.openweathermap.org/data/2.5/weather/";
     }
 
-    Gson gson = new GsonBuilder()
+    private static final Gson gson = new GsonBuilder()
             .setLenient()
             .create();
     private static Retrofit retrofit = null;
     private static Retrofit retrofit2 = null;
+    private static Retrofit retrofitFastAPI = null;
 
     private static String BASE_URL ="http://192.168.56.1:8080/Do_an_tot_nghiep_lph/";
     //    private static String BASE_URL ="https://edoc.cloudkma.fun/";
     private static String IMAGE_URL="https://anh.moe/";
+    private static String FASTAPI_URL = "http://10.0.2.2:8000/";
 
     public static ApiService getService(){
         if(retrofit==null)
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(gson))
                     .build();
 
         return retrofit.create(ApiService.class);
@@ -96,4 +102,13 @@ public class  Constant {
         return retrofit2.create(ApiService.class);
     }
 
+    public static ApiService getFastAPIService() {
+        if (retrofitFastAPI == null) {
+            retrofitFastAPI = new Retrofit.Builder()
+                    .baseUrl(FASTAPI_URL)
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .build();
+        }
+        return retrofitFastAPI.create(ApiService.class);
+    }
 }

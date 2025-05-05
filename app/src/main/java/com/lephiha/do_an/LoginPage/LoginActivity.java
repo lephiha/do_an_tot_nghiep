@@ -223,6 +223,12 @@ public class LoginActivity extends AppCompatActivity {
                 String token = loginResponse.getAccessToken();
                 User user = loginResponse.getData();
 
+                int patientId = user.getId();
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putInt("id", patientId);
+                editor.apply();
+                Log.d(TAG, "Saved patientId: " + patientId);
+
                 //lay db vao global variable
                 globaleVariable.setAccessToken("JWT" + token);
                 globaleVariable.setAuthUser(user);
@@ -254,6 +260,15 @@ public class LoginActivity extends AppCompatActivity {
                 /*Lay du lieu tu API ra*/
                 String token = response.getAccessToken();
                 User user = response.getData();
+
+
+                // Save patientId to SharedPreferences
+                int patientId = user.getId();
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putInt("id", patientId);
+                editor.putString("call_token", user.getToken());
+                editor.apply();
+                Log.d(TAG, "Saved patientId: " + patientId);
 
 
                 /*Lay du lieu vao Global Variable*/

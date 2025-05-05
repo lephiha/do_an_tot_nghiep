@@ -28,47 +28,59 @@ public class RecordRepository {
 
     //read by id
     private MutableLiveData<RecordReadByID> readByIDResponse = new MutableLiveData<>();
-    public MutableLiveData<RecordReadByID> readByID(Map<String, String> header, String appoinmentId) {
-        //1
+    public MutableLiveData<RecordReadByID> readByID(Map<String, String> header, String appointmentID)
+    {
+        /*Step 1*/
         animation.setValue(true);
 
-        //2
+
+        /*Step 2*/
         Retrofit service = HTTPService.getInstance();
         HTTPRequest api = service.create(HTTPRequest.class);
 
-        //3
-        Call<RecordReadByID> container = api.recordReadById(header, appoinmentId);
 
-        //4
+        /*Step 3*/
+        Call<RecordReadByID> container = api.recordReadById(header, appointmentID);
+
+        /*Step 4*/
         container.enqueue(new Callback<RecordReadByID>() {
             @Override
-            public void onResponse(@NonNull Call<RecordReadByID> call,@NonNull Response<RecordReadByID> response) {
-                if (response.isSuccessful()) {
+            public void onResponse(@NonNull Call<RecordReadByID> call, @NonNull Response<RecordReadByID> response) {
+                if(response.isSuccessful())
+                {
                     RecordReadByID content = response.body();
                     assert content != null;
+                    readByIDResponse.setValue(content);
                     animation.setValue(false);
+//                    System.out.println("==============================");
+//                    System.out.println(TAG);
+//                    System.out.println("result: " + content.getResult());
+//                    System.out.println("msg: " + content.getMsg());
 
                 }
-                if (response.errorBody() != null) {
-                    try {
+                if(response.errorBody() != null)
+                {
+                    try
+                    {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        System.out.println(jObjError);
+                        System.out.println( jObjError );
                     }
                     catch (Exception e) {
-                        System.out.println(e.getMessage());
+                        System.out.println( e.getMessage() );
                     }
                     readByIDResponse.setValue(null);
                     animation.setValue(false);
                 }
-
             }
 
             @Override
-            public void onFailure(@NonNull Call<RecordReadByID> call,@NonNull Throwable t) {
-                    System.out.println("Record Repository - Read By ID - error: "+ t.getMessage());
-                    animation.setValue(false);
+            public void onFailure(@NonNull Call<RecordReadByID> call, @NonNull Throwable t) {
+                System.out.println("Record Repository - Read By ID - error: " + t.getMessage());
+                //readAllResponse.setValue(null);
+                animation.setValue(false);
             }
         });
+
         return readByIDResponse;
     }
 }

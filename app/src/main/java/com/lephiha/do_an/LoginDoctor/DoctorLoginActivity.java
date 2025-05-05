@@ -1,4 +1,4 @@
-package com.lephiha.do_an.LoginDoctor; // Đảm bảo đúng package name
+package com.lephiha.do_an.LoginDoctor;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.lephiha.do_an.HomePage.HomePageActivity;
+import com.lephiha.do_an.DoctorPage.HomePageDoctor.HomeDoctorActivity;
 import com.lephiha.do_an.R;
 
 import org.json.JSONException;
@@ -35,10 +35,7 @@ public class DoctorLoginActivity extends AppCompatActivity {
     private Button btnLogin;
     private ProgressBar progressBar;
 
-
-    private static final String API_URL = "http://192.168.56.1:8080/Do_an_tot_nghiep_lph/api/app/video_call/login_doctor.php";
-
-
+    private static final String API_URL = "https://profound-platypus-exactly.ngrok-free.app/Do_an_tot_nghiep_lph/api/app/video_call/login_doctor.php";
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     private OkHttpClient client = new OkHttpClient();
 
@@ -60,9 +57,8 @@ public class DoctorLoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String email = editEmail.getText().toString().trim(); // trim() để loại bỏ khoảng trắng thừa
+                String email = editEmail.getText().toString().trim();
                 String password = editPassword.getText().toString().trim();
-
 
                 if (email.isEmpty()) {
                     editEmail.setError("Vui lòng nhập email");
@@ -81,131 +77,131 @@ public class DoctorLoginActivity extends AppCompatActivity {
                     return;
                 }
 
-
                 setLoadingState(true);
-                // Gọi phương thức đăng nhập
                 loginDoctor(email, password);
             }
         });
     }
 
-    // Phương thức quản lý trạng thái loading UI
     private void setLoadingState(boolean isLoading) {
         if (isLoading) {
-            btnLogin.setEnabled(false); // Vô hiệu hóa nút
-            progressBar.setVisibility(View.VISIBLE); // Hiện vòng xoay
+            btnLogin.setEnabled(false);
+            progressBar.setVisibility(View.VISIBLE);
         } else {
-            btnLogin.setEnabled(true); // Kích hoạt lại nút
-            progressBar.setVisibility(View.GONE); // Ẩn vòng xoay
+            btnLogin.setEnabled(true);
+            progressBar.setVisibility(View.GONE);
         }
     }
 
-
-    // Phương thức gửi yêu cầu đăng nhập
     private void loginDoctor(String email, String password) {
-        // Tạo JSON body chứa email và mật khẩu
         JSONObject jsonBody = new JSONObject();
         try {
             jsonBody.put("email", email);
             jsonBody.put("password", password);
         } catch (JSONException e) {
             Log.e(TAG, "Error creating JSON body", e);
-            setLoadingState(false); // Bật lại UI nếu lỗi tạo JSON
+            setLoadingState(false);
             Toast.makeText(DoctorLoginActivity.this, "Lỗi tạo yêu cầu", Toast.LENGTH_SHORT).show();
-            return; // Không tiếp tục nếu không tạo được JSON
+            return;
         }
 
-        // Tạo RequestBody từ JSON
         RequestBody body = RequestBody.create(jsonBody.toString(), JSON);
-
-        // Tạo HTTP request
         Request request = new Request.Builder()
-                .url(API_URL) // Sử dụng biến URL đã khai báo
+                .url(API_URL)
                 .post(body)
                 .build();
 
         Log.d(TAG, "Sending request to: " + API_URL);
         Log.d(TAG, "Request body: " + jsonBody.toString());
 
-        // Gửi yêu cầu không đồng bộ
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                // Lỗi mạng hoặc không kết nối được server
                 Log.e(TAG, "Login request failed", e);
                 runOnUiThread(() -> {
-                    setLoadingState(false); // Cập nhật UI
-                    Toast.makeText(DoctorLoginActivity.this, "Lỗi mạng hoặc không kết nối được máy chủ.", Toast.LENGTH_LONG).show();
+                    setLoadingState(false);
+                    Toast.makeText(DoctorLoginActivity.this, "Lỗi mạng hoặc không kết nối được máy chủ: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                // Có phản hồi từ server (thành công hoặc lỗi HTTP)
-                final String responseData = response.body().string(); // Đọc body chỉ một lần
+                final String responseData = response.body().string();
                 final int responseCode = response.code();
                 Log.d(TAG, "Response code: " + responseCode);
                 Log.d(TAG, "Response data: " + responseData);
 
-                // Xử lý kết quả trên UI thread
                 runOnUiThread(() -> {
-                    setLoadingState(false); // Cập nhật UI
+                    setLoadingState(false);
 
-                    if (response.isSuccessful()) { // Kiểm tra mã HTTP 2xx
+                    if (response.isSuccessful()) {
                         try {
                             JSONObject jsonResponse = new JSONObject(responseData);
-                            int result = jsonResponse.getInt("result"); // Dùng tên key từ PHP trả về
+                            int result = jsonResponse.getInt("result");
 
-                            if (result == 1) { // Đăng nhập thành công dựa theo key 'result' từ PHP
-                                String accessToken = jsonResponse.getString("accessToken");
-                                // Lấy thêm thông tin user nếu cần
-                                // JSONObject userInfo = jsonResponse.optJSONObject("user_info");
-                                // String doctorName = userInfo != null ? userInfo.optString("name", "Bác sĩ") : "Bác sĩ";
+                            if (result == 1) {
+                                // Lấy token từ API (trường "token" trong phản hồi)
+                                String token = jsonResponse.optString("token", null);
 
-                                // Lưu access token vào SharedPreferences
-                                SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE); // Đổi tên Prefs
+                                // Kiểm tra nếu token rỗng hoặc null
+                                if (token == null || token.isEmpty()) {
+                                    Log.w(TAG, "Token from API is empty or null");
+                                    Toast.makeText(DoctorLoginActivity.this, "Không tìm thấy token từ máy chủ", Toast.LENGTH_LONG).show();
+                                    return;
+                                }
+
+                                // Lưu token vào SharedPreferences
+                                SharedPreferences sharedPreferences = getSharedPreferences("doantotnghiep", MODE_PRIVATE);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putString("accessToken", accessToken);
-                                // editor.putString("doctorName", doctorName); // Lưu thêm tên nếu cần
-                                editor.apply(); // Sử dụng apply() cho hiệu năng tốt hơn commit()
+                                editor.putString("call_token", token);
 
-                                Log.i(TAG, "Login successful. AccessToken saved.");
+                                // Lưu thông tin bác sĩ từ user_info
+                                JSONObject userInfo = jsonResponse.optJSONObject("user_info");
+                                if (userInfo != null) {
+                                    String doctorName = userInfo.optString("name", "Bác sĩ");
+                                    String doctorId = userInfo.optString("id", "");
+                                    editor.putString("doctor_name", doctorName);
+                                    editor.putString("doctor_id", doctorId);
+                                    editor.apply();
+                                    Log.d(TAG, "Saved doctor name: " + doctorName + ", ID: " + doctorId);
+                                }
 
-                                // Chuyển hướng đến trang chủ
-                                Toast.makeText(DoctorLoginActivity.this, jsonResponse.getString("msg"), Toast.LENGTH_SHORT).show(); // Hiển thị thông báo thành công
-                                Intent intent = new Intent(DoctorLoginActivity.this, HomePageActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK); // Xóa các activity trước đó
+                                Log.i(TAG, "Login successful. Token saved: " + token);
+
+                                Toast.makeText(DoctorLoginActivity.this, jsonResponse.getString("msg"), Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(DoctorLoginActivity.this, HomeDoctorActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
-                                finish(); 
-
+                                finish();
                             } else {
-                                // Đăng nhập thất bại (result == 0)
-                                String message = jsonResponse.optString("msg", "Thông tin đăng nhập không chính xác."); // Lấy msg, có giá trị mặc định
+                                String message = jsonResponse.optString("msg", "Thông tin đăng nhập không chính xác.");
                                 Log.w(TAG, "Login failed: " + message);
                                 Toast.makeText(DoctorLoginActivity.this, message, Toast.LENGTH_LONG).show();
                             }
                         } catch (JSONException e) {
-                            // Lỗi khi phân tích JSON trả về từ server
                             Log.e(TAG, "Error parsing JSON response: " + responseData, e);
-                            Toast.makeText(DoctorLoginActivity.this, "Lỗi xử lý dữ liệu từ máy chủ.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(DoctorLoginActivity.this, "Lỗi xử lý dữ liệu từ máy chủ: " + e.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     } else {
-                        // Lỗi HTTP (mã 4xx, 5xx)
                         Log.e(TAG, "Login request unsuccessful. Code: " + responseCode);
                         String errorMessage = "Đăng nhập thất bại (Mã lỗi: " + responseCode + ")";
-                        // Cố gắng đọc thông điệp lỗi từ server nếu có
                         try {
                             JSONObject jsonError = new JSONObject(responseData);
                             errorMessage = jsonError.optString("msg", errorMessage);
                         } catch (JSONException jsonException) {
-                            // Không phải JSON hoặc không có 'msg', giữ lỗi mặc định
                             Log.w(TAG, "Response body is not valid JSON or doesn't contain 'msg'");
                         }
-
-                        Toast.makeText(DoctorLoginActivity.this, errorMessage , Toast.LENGTH_LONG).show();
+                        Toast.makeText(DoctorLoginActivity.this, errorMessage, Toast.LENGTH_LONG).show();
                     }
                 });
             }
+
         });
-    } 
+    }
+
+    // Hàm để lấy token từ SharedPreferences
+    public String getToken() {
+        SharedPreferences sharedPreferences = getSharedPreferences("doantotnghiep", MODE_PRIVATE);
+        return sharedPreferences.getString("call_token", "");
+    }
 }

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Background and text colors for dark mode -->
+    <color name="colorBackground">#121212</color> <!-- Màu nền tối -->
+    <color name="colorTextBlack">#FFFFFF</color> <!-- Chữ trắng trong chế độ tối -->
+    <color name="colorTextWhite">#CCCCCC</color>
+    <color name="colorTextSupport">#BBBBBB</color>
+    <color name="colorTextDialog">#BBDEFB</color>
+
+    <!-- SwitchCompat colors for dark mode -->
+    <color name="switchThumbOff">#666666</color>
+    <color name="switchTrackOff">#999999</color>
+    <color name="switchThumbOn">#FF4081</color>
+    <color name="switchTrackOn">#FF80AB</color>
+
+    <!-- Other colors for dark mode (tùy chỉnh theo nhu cầu) -->
+    <color name="colorInputBackground">#2A2A2A</color>
+    <color name="colorIconBackground">#2A2A2A</color>
+    <color name="colorBottomNavigationMenu">#121212</color>
+    <color name="colorButtomNavigationMenuPressed">#BBDEFB</color>
+    <color name="colorButtomNavigationMenuEnable">#BBBBBB</color>
+    <color name="colorBackgroundSettingAvatar">#2A2A2A</color>
+</resources>

@@ -179,7 +179,7 @@ public class ClientManager {
             });
         }
         if (!stringeeClient.isConnected()) {
-            stringeeClient.connect(instance.context.getSharedPreferences("UserData", MODE_PRIVATE).getString("token", ""));
+            stringeeClient.connect(instance.context.getSharedPreferences("doantotnghiep", MODE_PRIVATE).getString("call_token", ""));
         }
     }
 }
