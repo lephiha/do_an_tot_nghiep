@@ -3,10 +3,13 @@ package com.lephiha.do_an.DoctorPage.HomePageDoctor;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -14,6 +17,11 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.lephiha.do_an.AppointmentPage.AppointmentFragment;
+import com.lephiha.do_an.CallVideo.stringee.activity.CallActivity;
+import com.lephiha.do_an.CallVideo.stringee.common.Constant2;
+import com.lephiha.do_an.CallVideo.stringee.common.PermissionsUtils;
+import com.lephiha.do_an.CallVideo.stringee.common.Utils;
+import com.lephiha.do_an.CallVideo.stringee.manager.ClientManager;
 import com.lephiha.do_an.ChooseLoginActivity;
 import com.lephiha.do_an.Container.NotificationReadAll;
 import com.lephiha.do_an.Helper.Dialog;
@@ -47,6 +55,7 @@ public class HomeDoctorActivity extends AppCompatActivity {
     private String fragmentTag;
 
     private SharedPreferences sharedPreferences;
+    ClientManager clientManager;
 
     public static WeakReference<HomeDoctorActivity> weakActivity;
     public static HomeDoctorActivity getInstance() {
@@ -69,6 +78,7 @@ public class HomeDoctorActivity extends AppCompatActivity {
         setupEvent();
         setNumberOnNotificationIcon();
 
+        setupVideoCall();
     }
     @Override
     protected void onResume() {
@@ -202,6 +212,63 @@ public class HomeDoctorActivity extends AppCompatActivity {
 
         Intent intent = new Intent(this, ChooseLoginActivity.class);
         finish();
+        startActivity(intent);
+    }
+
+    private void setupVideoCall() {
+        initAndConnectStringee();
+        requestPermission();
+    }
+
+    private void requestPermission() {
+        if (!PermissionsUtils.getInstance().checkSelfPermission(this)) {
+            PermissionsUtils.getInstance().requestPermissions(this);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        boolean isGranted = PermissionsUtils.getInstance().verifyPermissions(grantResults);
+        if (requestCode == PermissionsUtils.REQUEST_PERMISSION) {
+            clientManager.isPermissionGranted = isGranted;
+            if (!isGranted) {
+                if (PermissionsUtils.getInstance().shouldRequestPermissionRationale(this)) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle(R.string.app_name);
+                    builder.setMessage("Permissions must be granted for the call");
+                    builder.setPositiveButton("Ok", (dialogInterface, id) -> dialogInterface.cancel());
+                    builder.setNegativeButton("Settings", (dialogInterface, id) -> {
+                        dialogInterface.cancel();
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        Uri uri = Uri.fromParts("package", getPackageName(), null);
+                        intent.setData(uri);
+                        startActivity(intent);
+                    });
+                    builder.create().show();
+                }
+            }
+        }
+    }
+
+    public void initAndConnectStringee() {
+        clientManager.connect();
+    }
+
+    public void makeCall(boolean isStringeeCall, boolean isVideoCall, String callId) {
+        if (Utils.isStringEmpty(callId) || !clientManager.getStringeeClient().isConnected()) {
+            return;
+        }
+        if (!clientManager.isPermissionGranted) {
+            PermissionsUtils.getInstance().requestPermissions(this);
+            return;
+        }
+        Intent intent = new Intent(this, CallActivity.class);
+        intent.putExtra(Constant2.PARAM_TO, callId);
+        intent.putExtra(Constant2.PARAM_IS_VIDEO_CALL, isVideoCall);
+        intent.putExtra(Constant2.PARAM_IS_INCOMING_CALL, false);
+        intent.putExtra(Constant2.PARAM_IS_STRINGEE_CALL, isStringeeCall);
         startActivity(intent);
     }
 }
