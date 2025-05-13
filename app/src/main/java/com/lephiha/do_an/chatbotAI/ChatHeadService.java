@@ -60,14 +60,17 @@ public class ChatHeadService extends Service {
                     type,
                     WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
                     PixelFormat.TRANSLUCENT);
+
+
             params.gravity = Gravity.TOP | Gravity.START;
+
 
             DisplayMetrics displayMetrics = new DisplayMetrics();
             windowManager.getDefaultDisplay().getMetrics(displayMetrics);
             int screenWidth = displayMetrics.widthPixels;
             int screenHeight = displayMetrics.heightPixels;
-            params.x = screenWidth - 80;
-            params.y = screenHeight - 160;
+            params.x = screenWidth/20;
+            params.y = screenHeight/2;
 
             windowManager.addView(chatHeadView, params);
             Log.d(TAG, "Chat head added to WindowManager at initial position x=" + params.x + ", y=" + params.y);

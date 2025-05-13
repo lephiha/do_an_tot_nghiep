@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -49,15 +50,14 @@ public class HomeDoctorActivity extends AppCompatActivity {
 
     private Dialog dialog;
     private GlobaleVariable globaleVariable;
-
     private BottomNavigationView bottomNavigationView;
     private Fragment fragment;
     private String fragmentTag;
-
     private SharedPreferences sharedPreferences;
-    ClientManager clientManager;
+    private ClientManager clientManager;
 
     public static WeakReference<HomeDoctorActivity> weakActivity;
+
     public static HomeDoctorActivity getInstance() {
         return weakActivity.get();
     }
@@ -68,8 +68,7 @@ public class HomeDoctorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home_doctor);
         weakActivity = new WeakReference<>(HomeDoctorActivity.this);
 
-
-        //enable homefragment by default
+        // Enable HomeDoctorFragment by default
         fragment = new HomeDoctorFragment();
         fragmentTag = "HomeDoctorFragment";
         enableFragment(fragment, fragmentTag);
@@ -77,35 +76,34 @@ public class HomeDoctorActivity extends AppCompatActivity {
         setupVariable();
         setupEvent();
         setNumberOnNotificationIcon();
-
         setupVideoCall();
     }
+
     @Override
     protected void onResume() {
         super.onResume();
         setNumberOnNotificationIcon();
         Tooltip.setLocale(this, sharedPreferences);
     }
-    private void setupVariable()
-    {
+
+    private void setupVariable() {
         globaleVariable = (GlobaleVariable) this.getApplication();
         dialog = new Dialog(this);
-
         sharedPreferences = this.getApplication()
                 .getSharedPreferences(globaleVariable.getSharedReferenceKey(), MODE_PRIVATE);
         bottomNavigationView = findViewById(R.id.bottomNavigationMenu);
+        clientManager = ClientManager.getInstance(this); // Khởi tạo clientManager
+        if (clientManager == null) {
+            System.out.println(TAG + ": Khởi tạo ClientManager thất bại");
+        }
     }
 
     @SuppressLint("NonConstantResourceId")
-    private void setupEvent(){
-        /*set up event when users click on item in bottom navigation view*/
+    private void setupEvent() {
+        // Sự kiện cho BottomNavigationView
         bottomNavigationView.setOnItemSelectedListener(item -> {
-            /*When ever users click on any icon, we updates the number of unread notifications*/
-
-
             int shortcut = item.getItemId();
             if (shortcut == R.id.shortcutHome) {
-                // setNumberOnNotif
                 fragment = new HomeDoctorFragment();
                 fragmentTag = "homeDoctorFragment";
             } else if (shortcut == R.id.shortcutNotification) {
@@ -119,18 +117,25 @@ public class HomeDoctorActivity extends AppCompatActivity {
                 fragment = new SettingsFragment();
                 fragmentTag = "settingsFragment";
             }
-
             enableFragment(fragment, fragmentTag);
             return true;
         });
 
+        // Sự kiện cho nút gọi video
+        findViewById(R.id.videoCallBtn).setOnClickListener(v -> {
+            String callId = "recipient_call_id"; // Thay bằng ID người nhận thực tế
+            if (callId.isEmpty()) {
+                Toast.makeText(this, "Vui lòng cung cấp ID người nhận", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            makeCall(true, true, callId);
+        });
     }
+
     private void enableFragment(Fragment fragment, String fragmentTag) {
         this.fragmentTag = fragmentTag;
-
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-
         transaction.replace(R.id.frameLayout, fragment, fragmentTag);
         transaction.commit();
     }
@@ -140,82 +145,64 @@ public class HomeDoctorActivity extends AppCompatActivity {
         dialog.confirm();
         dialog.show(getString(R.string.attention),
                 getString(R.string.are_you_sure_about_that), R.drawable.ic_info);
-        dialog.btnOK.setOnClickListener(view->{
+        dialog.btnOK.setOnClickListener(view -> {
             super.onBackPressed();
             finish();
         });
-        dialog.btnCancel.setOnClickListener(view-> dialog.close());
+        dialog.btnCancel.setOnClickListener(view -> dialog.close());
     }
 
-    public void setNumberOnNotificationIcon()
-    {
-        /*Step 1 - setup Retrofit*/
+    public void setNumberOnNotificationIcon() {
         Retrofit service = HTTPService.getInstance();
         HTTPRequest api = service.create(HTTPRequest.class);
-
-        /*Step 2 - prepare header*/
         Map<String, String> header = globaleVariable.getHeaders();
-
-        /*Step 3*/
         Call<NotificationReadAll> container = api.notificationReadAll(header);
-
-        /*Step 4*/
         container.enqueue(new Callback<NotificationReadAll>() {
             @Override
             public void onResponse(@NonNull Call<NotificationReadAll> call, @NonNull Response<NotificationReadAll> response) {
-                /*if successful, update the number of unread notification*/
-                if(response.isSuccessful())
-                {
+                if (response.isSuccessful()) {
                     NotificationReadAll content = response.body();
                     assert content != null;
-                    /*update the number of unread notification*/
                     int quantityUnread = content.getQuantityUnread();
                     bottomNavigationView
                             .getOrCreateBadge(R.id.shortcutNotification)
                             .setNumber(quantityUnread);
                 }
-                /*if fail, show exception*/
-                if(response.errorBody() != null)
-                {
-                    System.out.println(response);
-                    try
-                    {
+                if (response.errorBody() != null) {
+                    try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        System.out.println( jObjError );
-                    }
-                    catch (Exception e) {
-                        System.out.println(TAG);
-                        System.out.println("Exception: " + e.getMessage() );
+                        System.out.println(jObjError);
+                    } catch (Exception e) {
+                        System.out.println(TAG + ": Exception: " + e.getMessage());
                     }
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<NotificationReadAll> call, @NonNull Throwable t) {
-                System.out.println(TAG);
-                System.out.println("setNumberOnNotificationIcon - error: " + t.getMessage());
+                System.out.println(TAG + ": setNumberOnNotificationIcon - error: " + t.getMessage());
             }
         });
     }
-    public void exit()
-    {
+
+    public void exit() {
         SharedPreferences sharedPreferences = this.getApplication()
                 .getSharedPreferences(globaleVariable.getSharedReferenceKey(), MODE_PRIVATE);
-
         sharedPreferences.edit().putString("accessToken", null).apply();
-        sharedPreferences.edit().putInt("darkMode", 1).apply();// 1 is off, 2 is on
+        sharedPreferences.edit().putInt("darkMode", 1).apply();
         sharedPreferences.edit().putString("language", getString(R.string.vietnamese)).apply();
-
-
-        System.out.println(TAG);
-        System.out.println("access token: " + sharedPreferences.getString("accessToken", null) );
-
+        System.out.println(TAG + ": access token: " + sharedPreferences.getString("accessToken", null));
         Intent intent = new Intent(this, ChooseLoginActivity.class);
         finish();
         startActivity(intent);
     }
 
     private void setupVideoCall() {
+        if (clientManager == null) {
+            System.out.println(TAG + ": Không thể thiết lập gọi video, clientManager là null");
+            Toast.makeText(this, "Lỗi khởi tạo gọi video", Toast.LENGTH_SHORT).show();
+            return;
+        }
         initAndConnectStringee();
         requestPermission();
     }
@@ -231,33 +218,43 @@ public class HomeDoctorActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         boolean isGranted = PermissionsUtils.getInstance().verifyPermissions(grantResults);
         if (requestCode == PermissionsUtils.REQUEST_PERMISSION) {
-            clientManager.isPermissionGranted = isGranted;
-            if (!isGranted) {
-                if (PermissionsUtils.getInstance().shouldRequestPermissionRationale(this)) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle(R.string.app_name);
-                    builder.setMessage("Permissions must be granted for the call");
-                    builder.setPositiveButton("Ok", (dialogInterface, id) -> dialogInterface.cancel());
-                    builder.setNegativeButton("Settings", (dialogInterface, id) -> {
-                        dialogInterface.cancel();
-                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        Uri uri = Uri.fromParts("package", getPackageName(), null);
-                        intent.setData(uri);
-                        startActivity(intent);
-                    });
-                    builder.create().show();
-                }
+            if (clientManager != null) {
+                clientManager.isPermissionGranted = isGranted;
+            }
+            if (!isGranted && PermissionsUtils.getInstance().shouldRequestPermissionRationale(this)) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(R.string.app_name);
+                builder.setMessage("Cần cấp quyền để thực hiện cuộc gọi");
+                builder.setPositiveButton("OK", (dialogInterface, id) -> dialogInterface.cancel());
+                builder.setNegativeButton("Cài đặt", (dialogInterface, id) -> {
+                    dialogInterface.cancel();
+                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    Uri uri = Uri.fromParts("package", getPackageName(), null);
+                    intent.setData(uri);
+                    startActivity(intent);
+                });
+                builder.create().show();
             }
         }
     }
 
     public void initAndConnectStringee() {
+        if (clientManager == null) {
+            System.out.println(TAG + ": Không thể kết nối Stringee, clientManager là null");
+            return;
+        }
         clientManager.connect();
     }
 
     public void makeCall(boolean isStringeeCall, boolean isVideoCall, String callId) {
+        if (clientManager == null) {
+            System.out.println(TAG + ": Không thể thực hiện cuộc gọi, clientManager là null");
+            Toast.makeText(this, "Lỗi hệ thống gọi video", Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (Utils.isStringEmpty(callId) || !clientManager.getStringeeClient().isConnected()) {
+            Toast.makeText(this, "Không thể gọi, kiểm tra kết nối hoặc ID người nhận", Toast.LENGTH_SHORT).show();
             return;
         }
         if (!clientManager.isPermissionGranted) {
